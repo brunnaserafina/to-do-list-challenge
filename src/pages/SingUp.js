@@ -34,7 +34,7 @@ export default function SignUp() {
     try {
       await postSignUp({ name, email, password });
       toast("Cadastro realizado com sucesso! Faça seu login");
-      navigate("/");
+      navigate("/sign-in");
     } catch (err) {
       if (err.response.status === 409) {
         toast("E-mail já cadastrado!");
@@ -111,7 +111,7 @@ export default function SignUp() {
         </button>
       </form>
 
-      <Link to={"/"}>Já possui conta? Faça seu login!</Link>
+      <Link to={"/sign-in"}>Já possui conta? Faça seu login!</Link>
     </WrapperForm>
   );
 }

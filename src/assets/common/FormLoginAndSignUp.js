@@ -13,7 +13,7 @@ const WrapperForm = styled.div`
     font-weight: 600;
     font-size: 23px;
     width: 350px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     color: var(--dark-green);
   }
 
@@ -60,6 +60,10 @@ const WrapperForm = styled.div`
     cursor: pointer;
   }
 
+  button:hover {
+    background-color: var(--dark-green);
+  }
+
   button:nth-of-type(2) {
     background-color: var(--white);
     color: var(--red);
@@ -75,6 +79,11 @@ const WrapperForm = styled.div`
     color: var(--dark-green);
     margin-top: 15px;
     font-size: 15px;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
   }
 
   p {
