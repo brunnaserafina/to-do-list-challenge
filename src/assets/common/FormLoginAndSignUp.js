@@ -23,7 +23,7 @@ const WrapperForm = styled.div`
     height: 40px;
     margin-bottom: 10px;
     padding: 10px;
-    background-color: var(--white)
+    background-color: var(--white);
   }
 
   input:focus {

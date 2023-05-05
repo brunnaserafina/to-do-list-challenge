@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BsGoogle } from "react-icons/bs";
-import { postSignUp } from "../../services/authentication";
+import { postSignUp } from "../services/authentication";
 import { toast } from "react-toastify";
-import WrapperForm from "../../assets/common/FormLoginAndSignUp";
+import WrapperForm from "../assets/common/FormLoginAndSignUp";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -14,23 +14,21 @@ export default function SignUp() {
   const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
-  function isPasswordIsValid() {
-    const minimumCharacterCount = 6;
-    return password.length >= minimumCharacterCount;
-  }
-
-  function arePasswordsMatched() {
-    return password === confirmPassword;
-  }
-
   async function handleSubmit(event) {
     event.preventDefault();
 
-    setErrorPassword(!isPasswordIsValid);
-    setErrorConfirmPassword(!arePasswordsMatched);
-
-    if (!isPasswordIsValid || !arePasswordsMatched) {
+    if (password.length < 6) {
+      setErrorPassword(true);
       return;
+    } else {
+      setErrorPassword(false);
+    }
+
+    if (password !== confirmPassword) {
+      setErrorConfirmPassword(true);
+      return;
+    } else {
+      setErrorConfirmPassword(false);
     }
 
     try {
@@ -38,7 +36,11 @@ export default function SignUp() {
       toast("Cadastro realizado com sucesso! Faça seu login");
       navigate("/");
     } catch (err) {
-      toast("Não foi possível realizar seu cadastro. Tente novamente!");
+      if (err.response.status === 409) {
+        toast("E-mail já cadastrado!");
+      } else {
+        toast("Não foi possível realizar seu cadastro. Tente novamente!");
+      }
     }
   }
 
@@ -55,9 +57,10 @@ export default function SignUp() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          onInvalid={(e) =>
-            e.target.setCustomValidity("Por favor, preencha com seu nome.")
+          onInvalid={(F) =>
+            F.target.setCustomValidity("Por favor, preencha com seu nome.")
           }
+          onInput={(F) => F.target.setCustomValidity("")}
         />
 
         <label>E-mail</label>
@@ -67,9 +70,10 @@ export default function SignUp() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          onInvalid={(e) =>
-            e.target.setCustomValidity("Favor, insira seu e-mail.")
+          onInvalid={(F) =>
+            F.target.setCustomValidity("Favor, insira seu e-mail.")
           }
+          onInput={(F) => F.target.setCustomValidity("")}
         />
 
         <label>Senha</label>
@@ -79,9 +83,14 @@ export default function SignUp() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          onInvalid={(e) => e.target.setCustomValidity("Insira sua senha.")}
+          onInvalid={(F) => F.target.setCustomValidity("Insira sua senha.")}
+          onInput={(F) => F.target.setCustomValidity("")}
         />
-        {errorPassword && <p>A senha deve possuir no mínimo 6 caracteres!</p>}
+        {errorPassword ? (
+          <p>A senha deve possuir no mínimo 6 caracteres!</p>
+        ) : (
+          ""
+        )}
 
         <label>Confirmar senha</label>
         <input
@@ -90,7 +99,8 @@ export default function SignUp() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          onInvalid={(e) => e.target.setCustomValidity("Confirme sua senha.")}
+          onInvalid={(F) => F.target.setCustomValidity("Confirme sua senha.")}
+          onInput={(F) => F.target.setCustomValidity("")}
         />
         {errorConfirmPassword && <p>As senhas devem ser iguais!</p>}
 
