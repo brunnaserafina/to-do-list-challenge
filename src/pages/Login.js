@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BsGoogle } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import WrapperForm from "../assets/common/FormLoginAndSignUp";
+import WrapperForm from "../common/FormLoginAndSignUp";
 import { postLogin } from "../services/authentication";
 
 export default function Login() {

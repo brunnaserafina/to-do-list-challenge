@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BsGoogle } from "react-icons/bs";
 import { postSignUp } from "../services/authentication";
 import { toast } from "react-toastify";
-import WrapperForm from "../assets/common/FormLoginAndSignUp";
+import WrapperForm from "../common/FormLoginAndSignUp";
 
 export default function SignUp() {
   const [name, setName] = useState("");
