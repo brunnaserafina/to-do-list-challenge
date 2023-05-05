@@ -1,11 +1,14 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import SignUp from "./pages/SignUp/SingUp";
 
 export default function App() {
   return (
     <>
+      <ToastContainer />
       <Router>
         <Routes>
-          <Route></Route>
+          <Route path="/sign-up" element={<SignUp />}></Route>
         </Routes>
       </Router>
     </>
