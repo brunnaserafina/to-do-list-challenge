@@ -7,6 +7,7 @@ import { IoIosArrowDown } from "react-icons/io";
 
 export default function Home() {
   const tasks = ["Ler 10 páginas", "Almoçar", "Trabalhar"];
+  
   return (
     <>
       <Header />
@@ -14,7 +15,7 @@ export default function Home() {
         <Tasks>
           <span>
             <h1>Rotina</h1>
-            <RiDeleteBinLine font-size={"20px"} color={"var(--dark-green)"} />
+            <RiDeleteBinLine fontSize={"20px"} color={"var(--dark-green)"} />
           </span>
 
           <ul>

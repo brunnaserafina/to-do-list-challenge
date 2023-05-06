@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BsCheck2, BsPlus } from "react-icons/bs";
+import { toast } from "react-toastify";
 import styled from "styled-components";
+import { getLists, postList } from "../services/listsService";
 
 export default function Lists() {
   const [selected, setSelected] = useState(0);
@@ -12,15 +14,32 @@ export default function Lists() {
     setSelected(index);
   };
 
-  function addNewList() {
+  const addNewList = useCallback(async () => {
     if (titleList.length < 1) {
       return;
     }
 
-    setItems([...items, titleList]);
-    setTitleList("");
-    setCreatedNewList(false);
-  }
+    try {
+      await postList({ title: titleList });
+      setTitleList("");
+      setCreatedNewList(false);
+    } catch (error) {
+      toast("Não foi possível adicionar a tarefa, tente novamente!");
+    }
+  }, [titleList]);
+
+  useEffect(() => {
+    async function getAllLists() {
+      try {
+        const allLists = await getLists();
+
+        setItems(allLists.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getAllLists();
+  }, [addNewList]);
 
   return (
     <>
@@ -28,7 +47,7 @@ export default function Lists() {
         {items.map((item, index) => (
           <li key={index} onClick={() => handleItemClick(index)}>
             <span>{selected === index && <BsCheck2 fontSize={"18px"} />}</span>
-            <p>{item}</p>
+            <p>{item.title}</p>
           </li>
         ))}
       </List>
@@ -37,7 +56,7 @@ export default function Lists() {
         <CreateNewList>
           <input
             type="text"
-            placeholder="Digite sua nova tarefa"
+            placeholder="Digite o título da sua nova lista"
             value={titleList}
             onChange={(e) => setTitleList(e.target.value)}
           />
