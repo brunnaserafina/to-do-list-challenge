@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 
 export default function Header() {
   const [clickedArrow, setClickedArrow] = useState(false);
-  const [clickedMenu, setClickedMenu] = useState(false);
+  const [clickedMenu, setClickedMenu] = useState(true);
 
   return (
     <WrapperHeader>
