@@ -3,12 +3,15 @@ import { BsCheck2, BsPlus } from "react-icons/bs";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { getLists, postList } from "../services/listsService";
+import ListsContext from "../contexts/ListsContext";
+import { useContext } from "react";
 
 export default function Lists() {
   const [selected, setSelected] = useState(0);
   const [createdNewList, setCreatedNewList] = useState(false);
   const [titleList, setTitleList] = useState("");
   const [items, setItems] = useState([]);
+  const { setIdListSelected, setTitleListSelected } = useContext(ListsContext);
 
   const handleItemClick = (index) => {
     setSelected(index);
@@ -32,20 +35,28 @@ export default function Lists() {
     async function getAllLists() {
       try {
         const allLists = await getLists();
-
+        setTitleListSelected(allLists.data[0].title);
+        setIdListSelected(allLists.data[0].id);
         setItems(allLists.data);
       } catch (error) {
         console.log(error);
       }
     }
     getAllLists();
-  }, [addNewList]);
+  }, [addNewList, setTitleListSelected, setIdListSelected]);
 
   return (
     <>
       <List>
         {items.map((item, index) => (
-          <li key={index} onClick={() => handleItemClick(index)}>
+          <li
+            key={index}
+            onClick={() => {
+              handleItemClick(index);
+              setIdListSelected(item.id);
+              setTitleListSelected(item.title);
+            }}
+          >
             <span>{selected === index && <BsCheck2 fontSize={"18px"} />}</span>
             <p>{item.title}</p>
           </li>
@@ -59,6 +70,7 @@ export default function Lists() {
             placeholder="Digite o título da sua nova lista"
             value={titleList}
             onChange={(e) => setTitleList(e.target.value)}
+            autoFocus
           />
           <div>
             <button onClick={() => setCreatedNewList(false)}>Cancelar</button>
@@ -77,7 +89,7 @@ export default function Lists() {
   );
 }
 
-const CreateNewList = styled.div`
+export const CreateNewList = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -94,6 +106,7 @@ const CreateNewList = styled.div`
     padding: 10px;
     width: 100%;
     height: 30px;
+    border: none;
   }
 
   input:focus {
@@ -110,6 +123,7 @@ const CreateNewList = styled.div`
     border-radius: 5px;
     height: 20px;
     width: 80px;
+    margin-top: 5px;
   }
 
   button:nth-of-type(2) {

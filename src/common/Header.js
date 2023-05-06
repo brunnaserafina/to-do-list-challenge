@@ -48,6 +48,8 @@ export default function Header() {
 const WrapperHeader = styled.div`
   width: 100vw;
   height: 70px;
+  position: fixed;
+  top: 0;
   background-color: var(--light-green);
   display: flex;
   align-items: center;
