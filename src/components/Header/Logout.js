@@ -1,9 +1,22 @@
 import { IoIosArrowUp } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { putLogout } from "../../services/authentication";
 
 export default function Logout() {
+  const navigate = useNavigate("");
   const name = JSON.parse(localStorage.getItem("to-do-list"))?.name;
   const email = JSON.parse(localStorage.getItem("to-do-list"))?.email;
+
+  async function logout() {
+    try {
+      await putLogout();
+      localStorage.removeItem("to-do-list");
+      navigate("/sign-in");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -11,7 +24,7 @@ export default function Logout() {
       <WindowMoreOptionsPerfil>
         <h2>{name}</h2>
         <h3>{email}</h3>
-        <p>Sair</p>
+        <p onClick={logout}>Sair</p>
       </WindowMoreOptionsPerfil>
     </>
   );
