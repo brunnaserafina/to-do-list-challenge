@@ -4,7 +4,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
 import { useState } from "react";
 import Logout from "./Logout";
-import Sidebar from "./Sidebar";
+import Sidebar from "../Sidebar/Sidebar";
 
 export default function Header() {
   const [clickedArrow, setClickedArrow] = useState(false);
