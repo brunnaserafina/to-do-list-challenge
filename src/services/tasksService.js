@@ -57,4 +57,18 @@ function editTaskFinished(params) {
   return promise;
 }
 
-export { postTask, getTasksUnfinished, getTasksFinished, editTaskFinished };
+function getTasksBySearch(search) {
+  const config = createHeaders();
+
+  const promise = axios.get(`${BASE_URL}/tasks/?search=${search}`, config);
+
+  return promise;
+}
+
+export {
+  postTask,
+  getTasksUnfinished,
+  getTasksFinished,
+  editTaskFinished,
+  getTasksBySearch,
+};

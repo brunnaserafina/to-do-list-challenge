@@ -9,7 +9,8 @@ export default function CreateTask({
   setTitleTask,
   setCreatedNewTask,
 }) {
-  const { idListSelected, render, setRender } = useContext(ListsContext);
+  const { idListSelected, render, setRender, allLists } =
+    useContext(ListsContext);
 
   const addNewTask = useCallback(async () => {
     if (titleTask.length < 1) {
@@ -17,7 +18,12 @@ export default function CreateTask({
     }
 
     try {
-      await postTask({ name: titleTask, listId: idListSelected });
+      if (idListSelected === null) {
+        await postTask({ name: titleTask, listId: allLists[0].id });
+      } else {
+        await postTask({ name: titleTask, listId: idListSelected });
+      }
+
       setTitleTask("");
       setCreatedNewTask(false);
       setRender(!render);
@@ -31,6 +37,7 @@ export default function CreateTask({
     setCreatedNewTask,
     render,
     setRender,
+    allLists,
   ]);
 
   return (

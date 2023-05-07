@@ -12,18 +12,24 @@ export default function DeleteList({ setCreatedNewTask, setTitleTask }) {
     setTitleListSelected,
     setSelectedItemIndex,
     setIdListSelected,
+    allLists,
   } = useContext(ListsContext);
 
   const deleteAllList = useCallback(async () => {
     if (window.confirm("Deseja deletar?")) {
       try {
-        await deleteList({ listId: idListSelected });
-        const allLists = await getLists();
+        if (idListSelected === null) {
+          await deleteList({ listId: allLists[0].id });
+        } else {
+          await deleteList({ listId: idListSelected });
+        }
+
+        const allList = await getLists();
         setCreatedNewTask(false);
         setTitleTask("");
-        if (allLists.data.length > 0) {
-          setTitleListSelected(allLists?.data[0].title || "");
-          setIdListSelected(allLists?.data[0].id);
+        if (allList.data.length > 0) {
+          setTitleListSelected(allList?.data[0].title || "");
+          setIdListSelected(allList?.data[0].id);
           setSelectedItemIndex(0);
         }
 
@@ -41,6 +47,7 @@ export default function DeleteList({ setCreatedNewTask, setTitleTask }) {
     setTitleListSelected,
     setIdListSelected,
     setSelectedItemIndex,
+    allLists,
   ]);
 
   return (

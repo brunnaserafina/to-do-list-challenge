@@ -2,13 +2,32 @@ import styled from "styled-components";
 import { CgMenu } from "react-icons/cg";
 import { IoIosArrowDown } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { DebounceInput } from "react-debounce-input";
 import Logout from "./Logout";
 import Sidebar from "../Sidebar/Sidebar";
+import { getTasksBySearch } from "../../services/tasksService";
 
 export default function Header() {
   const [clickedArrow, setClickedArrow] = useState(false);
   const [clickedMenu, setClickedMenu] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
+  const [tasksSearch, setTasksSearch] = useState([]);
+
+  const searchTask = useCallback(async (search) => {
+    setSearchInput(search);
+
+    if (search.length >= 1) {
+      try {
+        const promise = await getTasksBySearch(search);
+        setTasksSearch(promise.data.tasks);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setTasksSearch([]);
+    }
+  }, []);
 
   return (
     <WrapperHeader>
@@ -21,10 +40,21 @@ export default function Header() {
 
       {clickedMenu && <Sidebar />}
 
-      <Search>
-        <BsSearch fontSize={"20px"} color={"var(--light-green)"} />
-        <input type="text" placeholder="Buscar" />
-      </Search>
+      <SearchContainer>
+        <SearchInput>
+          <BsSearch fontSize={"20px"} color={"var(--light-green)"} />
+          <DebounceInput
+            minLength={1}
+            debounceTimeout={300}
+            value={searchInput}
+            onChange={(e) => searchTask(e.target.value)}
+            type="text"
+            placeholder="Buscar tarefa"
+          />
+        </SearchInput>
+
+        {tasksSearch.length > 0 && <SearchResponse tasksSearch={tasksSearch} />}
+      </SearchContainer>
 
       <span onClick={() => setClickedArrow(!clickedArrow)}>
         <img
@@ -44,6 +74,43 @@ export default function Header() {
     </WrapperHeader>
   );
 }
+
+function SearchResponse({ tasksSearch }) {
+  return (
+    <SearchResponseContainer>
+      <ul>
+        {tasksSearch.map((item, index) => (
+          <li key={index}>{item.name}</li>
+        ))}
+      </ul>
+    </SearchResponseContainer>
+  );
+}
+
+const SearchContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+`;
+
+const SearchResponseContainer = styled.div`
+  width: 20vw;
+  height: fit-content;
+  background-color: var(--light-green);
+  border: 1px solid var(--dark-green);
+  border-radius: 10px;
+  padding: 10px;
+  position: absolute;
+  margin-top: 5px;
+  top: 100%;
+
+  li {
+    color: var(--white);
+    z-index: 3;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+`;
 
 const WrapperHeader = styled.div`
   width: 100vw;
@@ -68,6 +135,7 @@ const WrapperHeader = styled.div`
     width: 100%;
     height: 40px;
     border: none;
+    border-radius: 10px;
   }
 
   input::placeholder {
@@ -82,7 +150,7 @@ const WrapperHeader = styled.div`
   }
 `;
 
-const Search = styled.div`
+const SearchInput = styled.div`
   width: 20vw;
   height: 40px;
   background-color: var(--white);
@@ -94,6 +162,7 @@ const Search = styled.div`
   input {
     margin-left: 5px;
     border: none;
+    padding: 5px;
   }
 
   input:focus {
