@@ -23,6 +23,12 @@ export default function Lists() {
     setSelectedItemIndex(index);
   };
 
+  function handleKeyDown(event) {
+    if (event.keyCode === 13) {
+      addNewList();
+    }
+  }
+
   const addNewList = useCallback(async () => {
     if (titleList === "") {
       return;
@@ -81,6 +87,7 @@ export default function Lists() {
             placeholder="Digite o título da sua nova lista"
             value={titleList}
             onChange={(e) => setTitleList(e.target.value)}
+            onKeyDown={handleKeyDown}
             autoFocus
           />
 

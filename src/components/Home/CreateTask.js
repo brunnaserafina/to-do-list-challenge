@@ -12,11 +12,16 @@ export default function CreateTask({
   const { idListSelected, render, setRender, allLists } =
     useContext(ListsContext);
 
+  function handleKeyDown(event) {
+    if (event.keyCode === 13) {
+      addNewTask();
+    }
+  }
+
   const addNewTask = useCallback(async () => {
     if (titleTask.length < 1) {
       return;
     }
-
     try {
       if (idListSelected === null) {
         await postTask({ name: titleTask, listId: allLists[0].id });
@@ -47,6 +52,7 @@ export default function CreateTask({
         placeholder="Digite o título da sua nova tarefa"
         value={titleTask}
         onChange={(e) => setTitleTask(e.target.value)}
+        onKeyDown={handleKeyDown}
         autoFocus
       />
       <div>
