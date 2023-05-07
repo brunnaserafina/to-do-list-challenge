@@ -28,4 +28,12 @@ function getLists() {
   return promise;
 }
 
-export { postList, getLists };
+function deleteList(params) {
+  const { listId } = params;
+  const config = createHeaders();
+
+  const promise = axios.delete(`${BASE_URL}/lists/${listId}`, config);
+  return promise;
+}
+
+export { postList, getLists, deleteList };

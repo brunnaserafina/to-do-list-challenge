@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import styled from "styled-components";
+import DeleteList from "./DeleteList";
 import ListsContext from "../../contexts/ListsContext";
 import ToDoTask, { Check } from "./ToDoTaskItem";
 import CreateTask from "./CreateTask";
@@ -46,6 +47,10 @@ export default function ToDoTasksList() {
         ) : (
           <h1>{titleListSelected}</h1>
         )}
+        <DeleteList
+          setCreatedNewTask={setCreatedNewTask}
+          setTitleTask={setTitleTask}
+        />
       </span>
 
       <ul>
