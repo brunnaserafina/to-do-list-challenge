@@ -60,7 +60,10 @@ function editTaskFinished(params) {
 function getTasksBySearch(search) {
   const config = createHeaders();
 
-  const promise = axios.get(`${BASE_URL}/tasks/?search=${search}`, config);
+  const promise = axios.get(
+    `${BASE_URL}/tasks/?search=${search.toLowerCase()}`,
+    config
+  );
 
   return promise;
 }
