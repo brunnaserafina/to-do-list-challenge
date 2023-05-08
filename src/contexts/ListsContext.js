@@ -31,7 +31,7 @@ export function ListsProvider({ children }) {
     }
 
     getAllLists();
-  }, [render]);
+  }, [render, setRender]);
 
   return (
     <ListsContext.Provider

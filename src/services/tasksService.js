@@ -57,6 +57,19 @@ function editTaskFinished(params) {
   return promise;
 }
 
+function editTaskUnfinished(params) {
+  const { taskId } = params;
+
+  const config = createHeaders();
+
+  const promise = axios.put(
+    `${BASE_URL}/tasks/edit/unfinished/${taskId}`,
+    {},
+    config
+  );
+  return promise;
+}
+
 function getTasksBySearch(search) {
   const config = createHeaders();
 
@@ -101,6 +114,7 @@ export {
   getTasksUnfinished,
   getTasksFinished,
   editTaskFinished,
+  editTaskUnfinished,
   getTasksBySearch,
   getTaskById,
   putAnotationTask,

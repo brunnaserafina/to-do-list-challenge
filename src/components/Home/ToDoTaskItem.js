@@ -5,12 +5,24 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
-import { editTaskFinished } from "../../services/tasksService";
+import {
+  editTaskFinished,
+  editTaskUnfinished,
+} from "../../services/tasksService";
 
 export default function ToDoTask({ name, id, isCompleted }) {
   const { setRender } = useContext(ListsContext);
   const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
     useContext(TasksContext);
+
+  const handleUnfinishTask = useCallback(async () => {
+    try {
+      await editTaskUnfinished({ taskId: id });
+      setRender((prev) => !prev);
+    } catch (error) {
+      toast("Não foi possível atualizar a tarefa");
+    }
+  }, [setRender, id]);
 
   const handleFinishTask = useCallback(async () => {
     try {
@@ -44,9 +56,9 @@ export default function ToDoTask({ name, id, isCompleted }) {
           </div>
         </Check>
       ) : (
-        <Check color={"gray"}>
+        <Check color={"gray"} onClick={handleUnfinishTask}>
           <div>
-            <AiOutlineClose color={"white"} />
+            <AiOutlineClose color={"white"} cursor={"pointer"} />
           </div>
         </Check>
       )}

@@ -5,7 +5,10 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
-import { getTasksFinished } from "../../services/tasksService";
+import {
+  editTaskUnfinished,
+  getTasksFinished,
+} from "../../services/tasksService";
 import { Check } from "./ToDoTaskItem";
 
 export default function DoneTasksList() {
@@ -15,6 +18,18 @@ export default function DoneTasksList() {
     useContext(ListsContext);
   const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
     useContext(TasksContext);
+
+  const handleUnfinishTask = useCallback(
+    async (id) => {
+      try {
+        await editTaskUnfinished({ taskId: id });
+        setRender((prev) => !prev);
+      } catch (error) {
+        toast("Não foi possível atualizar a tarefa");
+      }
+    },
+    [setRender]
+  );
 
   const handleOpenTask = useCallback(
     async (id, name) => {
@@ -71,13 +86,15 @@ export default function DoneTasksList() {
       {openFinishedTasks && (
         <ul>
           {tasksFinished?.map((item, index) => (
-            <li key={index} onClick={() => handleOpenTask(item.id, item.name)}>
-              <Check color={"gray"}>
+            <li key={index}>
+              <Check color={"gray"} onClick={() => handleUnfinishTask(item.id)}>
                 <div>
                   <AiOutlineClose color={"white"} />
                 </div>
               </Check>
-              {item.name}
+              <p onClick={() => handleOpenTask(item.id, item.name)}>
+                {item.name}
+              </p>
             </li>
           ))}
         </ul>

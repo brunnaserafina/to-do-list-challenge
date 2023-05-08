@@ -4,7 +4,6 @@ import { IoIosArrowDown } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
 import { useCallback, useContext, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
-
 import Logout from "./Logout";
 import Sidebar from "../SidebarLists/SidebarLists";
 import { getTasksBySearch } from "../../services/tasksService";
@@ -54,7 +53,13 @@ export default function Header() {
           />
         </SearchInput>
 
-        {tasksSearch.length > 0 && <SearchResponse tasksSearch={tasksSearch} />}
+        {tasksSearch.length > 0 && (
+          <SearchResponse
+            tasksSearch={tasksSearch}
+            setTasksSearch={setTasksSearch}
+            setSearchInput={setSearchInput}
+          />
+        )}
       </SearchContainer>
 
       <span onClick={() => setClickedArrow(!clickedArrow)}>
@@ -76,20 +81,36 @@ export default function Header() {
   );
 }
 
-function SearchResponse({ tasksSearch }) {
+function SearchResponse({ tasksSearch, setTasksSearch, setSearchInput }) {
   return (
     <SearchResponseContainer>
       <ul>
         {tasksSearch.map((item, index) => (
-          <ListTask key={index} name={item.name} id={item.id} />
+          <ListTask
+            key={index}
+            name={item.name}
+            id={item.id}
+            listId={item.list_id}
+            listName={item.lists.title}
+            setTasksSearch={setTasksSearch}
+            setSearchInput={setSearchInput}
+          />
         ))}
       </ul>
     </SearchResponseContainer>
   );
 }
 
-function ListTask({ name, id }) {
-  const { render, setRender } = useContext(ListsContext);
+function ListTask({
+  name,
+  id,
+  listId,
+  listName,
+  setTasksSearch,
+  setSearchInput,
+}) {
+  const { render, setRender, setIdListSelected, setTitleListSelected } =
+    useContext(ListsContext);
   const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
     useContext(TasksContext);
 
@@ -98,6 +119,10 @@ function ListTask({ name, id }) {
     setTaskSelected(0);
     setRender(!render);
     setTaskIdSelected(id);
+    setIdListSelected(listId);
+    setTitleListSelected(listName);
+    setTasksSearch([]);
+    setSearchInput("");
   }, [
     setNameTaskSelected,
     name,
@@ -106,6 +131,12 @@ function ListTask({ name, id }) {
     render,
     id,
     setTaskIdSelected,
+    listId,
+    setIdListSelected,
+    listName,
+    setTitleListSelected,
+    setSearchInput,
+    setTasksSearch,
   ]);
 
   return <li onClick={openTask}>{name}</li>;
