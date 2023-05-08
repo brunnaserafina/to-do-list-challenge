@@ -14,8 +14,10 @@ export function TasksProvider({ children }) {
   useEffect(() => {
     async function task() {
       try {
-        const taskResponse = await getTaskById(taskIdSelected);
-        setAnotation(taskResponse.data[0]?.anotation);
+        if (taskIdSelected !== null) {
+          const taskResponse = await getTaskById(taskIdSelected);
+          setAnotation(taskResponse.data[0]?.anotation);
+        }
       } catch (error) {
         console.log(error);
       }

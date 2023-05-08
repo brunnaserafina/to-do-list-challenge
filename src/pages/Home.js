@@ -1,27 +1,31 @@
 import { useContext } from "react";
 import styled from "styled-components";
+
 import ListsContext from "../contexts/ListsContext";
+import TasksContext from "../contexts/TasksContext";
+
 import Header from "../components/Header/Header";
 import DoneTasksList from "../components/Home/DoneTasksList";
 import ToDoTasksList from "../components/Home/ToDoTasksList";
 import SidebarTask from "../components/SideBarTask/SidebarTask";
-import TasksContext from "../contexts/TasksContext";
 
 export default function Home() {
   const { allLists } = useContext(ListsContext);
   const { taskSelected } = useContext(TasksContext);
 
+  const hasLists = allLists.length > 0;
+
   return (
     <>
       <Header />
 
-      {allLists.length === 0 ? (
-        <MessageNoLists>Você ainda não possui nenhuma lista :(</MessageNoLists>
-      ) : (
+      {hasLists ? (
         <WrapperHome>
           <ToDoTasksList />
           <DoneTasksList />
         </WrapperHome>
+      ) : (
+        <MessageNoLists>Você ainda não possui nenhuma lista :(</MessageNoLists>
       )}
 
       {taskSelected !== null && <SidebarTask />}
