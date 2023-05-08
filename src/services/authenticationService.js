@@ -1,5 +1,5 @@
 import axios from "axios";
-import createHeaders from "./token";
+import createHeaders from "./headersConfig";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
