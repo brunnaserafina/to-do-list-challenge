@@ -46,7 +46,7 @@ export default function SidebarTask() {
               id={item.id}
               isCompleted={item.is_completed}
             />
-            <textarea
+            <TextArea
               value={writes[index]}
               onChange={(e) => {
                 const newWrites = [...writes];
@@ -57,7 +57,8 @@ export default function SidebarTask() {
               cols="30"
               rows="10"
               placeholder="Adicionar anotação"
-            ></textarea>
+              isCompleted={item.is_completed}
+            ></TextArea>
             <Button
               isCompleted={item.is_completed}
               onClick={() => handleSave(item.id, index)}
@@ -106,24 +107,28 @@ const WrapperSideBarTask = styled.span`
     color: var(--dark-green);
     font-weight: 700;
   }
+`;
 
-  textarea {
-    width: 100%;
-    margin-top: 20px;
-    border: none;
-    border-radius: 10px;
-    font-family: Roboto;
-    font-size: 15px;
-    padding: 10px;
-    color: var(--dark-green);
-  }
+const TextArea = styled.textarea`
+  width: 100%;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  font-family: Roboto;
+  font-size: 15px;
+  padding: 10px;
+  color: ${(props) =>
+    props.isCompleted ? "gray" : "var(--dark-green)"};
 
-  textarea::placeholder {
-    color: var(--dark-green);
+  &::placeholder {
+    color: ${(props) =>
+      props.isCompleted
+        ? "gray"
+        : "var(--dark-green)"};
     font-size: 14px;
   }
 
-  textarea:focus {
+  &:focus {
     outline: 0;
     border: ${(props) =>
       props.isCompleted
