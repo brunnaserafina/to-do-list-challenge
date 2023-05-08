@@ -110,4 +110,8 @@ const DoneTasksContainer = styled.div`
   h2 {
     margin-bottom: 8px;
   }
+
+  @media (max-width: 767px) {
+    width: 90%;
+  }
 `;

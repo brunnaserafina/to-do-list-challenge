@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { BsGoogle } from "react-icons/bs";
+import { useContext, useState } from "react";
+// import { BsGoogle } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import WrapperForm from "../common/FormLoginAndSignUp";
+import ListsContext from "../contexts/ListsContext";
 import { postLogin } from "../services/authentication";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setRender } = useContext(ListsContext);
   const navigate = useNavigate();
 
   async function handleSubmit(event) {
@@ -26,6 +28,7 @@ export default function Login() {
         })
       );
       navigate("/");
+      setRender((prev) => !prev);
     } catch (err) {
       toast(
         "Não foi possível efetuar seu login. Confira seus dados e tente novamente!"
@@ -64,10 +67,10 @@ export default function Login() {
         />
 
         <button type="submit">Entrar</button>
-        <button>
+        {/* <button>
           <BsGoogle fontSize={"20px"} />
           <p>Acessar com Google</p>
-        </button>
+        </button> */}
       </form>
 
       <Link to={"/sign-up"}>Não possui conta? Cadastre-se!</Link>

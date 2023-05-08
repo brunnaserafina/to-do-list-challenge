@@ -4,7 +4,7 @@ import ListsContext from "../contexts/ListsContext";
 import Header from "../components/Header/Header";
 import DoneTasksList from "../components/Home/DoneTasksList";
 import ToDoTasksList from "../components/Home/ToDoTasksList";
-import SidebarTask from "../components/MoreInfoTask/SidebarTask";
+import SidebarTask from "../components/SideBarTask/SidebarTask";
 import TasksContext from "../contexts/TasksContext";
 
 export default function Home() {
@@ -30,10 +30,10 @@ export default function Home() {
 }
 
 const MessageNoLists = styled.p`
-  width: 100vw;
   text-align: center;
   color: var(--dark-green);
   margin-top: 13vh;
+  margin-right: 2vw;
 `;
 
 const WrapperHome = styled.div`

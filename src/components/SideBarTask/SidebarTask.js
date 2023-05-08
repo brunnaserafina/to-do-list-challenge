@@ -5,11 +5,13 @@ import { getTaskById, putAnotationTask } from "../../services/tasksService";
 import ToDoTask from "../Home/ToDoTaskItem";
 import DeleteTask from "./DeleteTask";
 import { FiLogOut } from "react-icons/fi";
+import ListsContext from "../../contexts/ListsContext";
 
 export default function SidebarTask() {
   const [tasks, setTasks] = useState([]);
   const { taskIdSelected, anotation, setTaskSelected } =
     useContext(TasksContext);
+  const { render } = useContext(ListsContext);
   const [writes, setWrites] = useState([]);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function SidebarTask() {
       }
     }
     fetchTask();
-  }, [taskIdSelected, anotation]);
+  }, [taskIdSelected, anotation, render]);
 
   const handleSave = async (id, index) => {
     try {
@@ -95,7 +97,7 @@ const WrapperSideBarTask = styled.span`
   height: 100vh;
   width: 20vw;
   top: 70px;
-  padding: 5vh;
+  padding: 30px 20px;
   z-index: 1 !important;
   display: flex;
   flex-direction: column;
@@ -107,6 +109,14 @@ const WrapperSideBarTask = styled.span`
     color: var(--dark-green);
     font-weight: 700;
   }
+
+  @media (max-width: 767px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    width: 60%;
+  }
 `;
 
 const TextArea = styled.textarea`
@@ -117,14 +127,10 @@ const TextArea = styled.textarea`
   font-family: Roboto;
   font-size: 15px;
   padding: 10px;
-  color: ${(props) =>
-    props.isCompleted ? "gray" : "var(--dark-green)"};
+  color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
 
   &::placeholder {
-    color: ${(props) =>
-      props.isCompleted
-        ? "gray"
-        : "var(--dark-green)"};
+    color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
     font-size: 14px;
   }
 

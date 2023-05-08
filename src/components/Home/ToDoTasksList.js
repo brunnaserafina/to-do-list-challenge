@@ -13,7 +13,7 @@ export default function ToDoTasksList() {
   const [tasksUnfinished, setTasksUnfinished] = useState([]);
   const [titleTask, setTitleTask] = useState("");
   const { titleListSelected } = useContext(ListsContext);
-  const { allLists, idListSelected, render } = useContext(ListsContext);
+  const { allLists, idListSelected, setRender } = useContext(ListsContext);
 
   useEffect(() => {
     async function getAllTasks() {
@@ -37,7 +37,7 @@ export default function ToDoTasksList() {
     }
 
     getAllTasks();
-  }, [idListSelected, allLists, render]);
+  }, [idListSelected, allLists, setRender]);
 
   return (
     <ToDoTasks>
@@ -112,5 +112,9 @@ const ToDoTasks = styled.div`
     align-items: center;
     margin-top: 25px;
     cursor: pointer;
+  }
+
+  @media (max-width: 767px) {
+    width: 90%;
   }
 `;

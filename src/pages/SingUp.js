@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BsGoogle } from "react-icons/bs";
+// import { BsGoogle } from "react-icons/bs";
 import { postSignUp } from "../services/authentication";
 import { toast } from "react-toastify";
 import WrapperForm from "../common/FormLoginAndSignUp";
@@ -105,10 +105,10 @@ export default function SignUp() {
         {errorConfirmPassword && <p>As senhas devem ser iguais!</p>}
 
         <button type="submit">Cadastrar</button>
-        <button>
+        {/* <button>
           <BsGoogle fontSize={"20px"} />
           <p>Acessar com Google</p>
-        </button>
+        </button> */}
       </form>
 
       <Link to={"/sign-in"}>Já possui conta? Faça seu login!</Link>

@@ -40,7 +40,7 @@ export default function ToDoTask({ name, id, isCompleted }) {
       {!isCompleted ? (
         <Check onClick={handleFinishTask}>
           <div>
-            <BsCheckLg color={"white"} />
+            <BsCheckLg color={"white"} cursor={"pointer"} />
           </div>
         </Check>
       ) : (
@@ -60,6 +60,10 @@ export default function ToDoTask({ name, id, isCompleted }) {
 
 const TitleList = styled.p`
   color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
+  max-width: 88%;
+  white-space: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const Check = styled.div`

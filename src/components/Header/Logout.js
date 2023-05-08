@@ -31,6 +31,7 @@ export default function Logout() {
 }
 
 const WindowMoreOptionsPerfil = styled.div`
+  min-width: fit-content;
   width: 15vw;
   height: 70px;
   background-color: var(--light-green);

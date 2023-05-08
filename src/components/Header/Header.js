@@ -6,7 +6,7 @@ import { useCallback, useContext, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 
 import Logout from "./Logout";
-import Sidebar from "../Sidebar/Sidebar";
+import Sidebar from "../SidebarLists/SidebarLists";
 import { getTasksBySearch } from "../../services/tasksService";
 import TasksContext from "../../contexts/TasksContext";
 import ListsContext from "../../contexts/ListsContext";
@@ -59,7 +59,7 @@ export default function Header() {
 
       <span onClick={() => setClickedArrow(!clickedArrow)}>
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSBGr8xcONf9Vgp8Y28P41yFW6bLOHlwK4-w&usqp=CAU"
+          src="https://img.freepik.com/vetores-premium/gato-fofo-dentro-da-caixa-e-mascote-dos-desenhos-animados-de-mao-acenando_357749-765.jpg"
           alt="Foto perfil"
         />
         {clickedArrow ? (
@@ -134,6 +134,10 @@ const SearchResponseContainer = styled.div`
     margin-bottom: 5px;
     cursor: pointer;
   }
+
+  @media (max-width: 767px) {
+    min-width: fit-content;
+  }
 `;
 
 const WrapperHeader = styled.div`
@@ -194,5 +198,9 @@ const SearchInput = styled.div`
     outline: 0;
     border: none;
     caret-color: var(--dark-green);
+  }
+
+  @media (max-width: 767px) {
+    width: 220px;
   }
 `;

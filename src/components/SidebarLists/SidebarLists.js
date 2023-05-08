@@ -57,4 +57,9 @@ const WrapperSideBar = styled.div`
     align-items: center;
     margin-top: 5px;
   }
+
+  @media (max-width: 767px) {
+    width: 70%;
+    padding: 30px 15px;
+  }
 `;
