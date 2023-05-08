@@ -2,11 +2,14 @@ import styled from "styled-components";
 import { CgMenu } from "react-icons/cg";
 import { IoIosArrowDown } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
+
 import Logout from "./Logout";
 import Sidebar from "../Sidebar/Sidebar";
 import { getTasksBySearch } from "../../services/tasksService";
+import TasksContext from "../../contexts/TasksContext";
+import ListsContext from "../../contexts/ListsContext";
 
 export default function Header() {
   const [clickedArrow, setClickedArrow] = useState(false);
@@ -21,9 +24,7 @@ export default function Header() {
       try {
         const promise = await getTasksBySearch(search);
         setTasksSearch(promise.data.tasks);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     } else {
       setTasksSearch([]);
     }
@@ -80,11 +81,24 @@ function SearchResponse({ tasksSearch }) {
     <SearchResponseContainer>
       <ul>
         {tasksSearch.map((item, index) => (
-          <li key={index}>{item.name}</li>
+          <ListTask key={index} name={item.name} />
         ))}
       </ul>
     </SearchResponseContainer>
   );
+}
+
+function ListTask({ name }) {
+  const { render, setRender } = useContext(ListsContext);
+  const { setNameTaskSelected, setTaskSelected } = useContext(TasksContext);
+
+  const openTask = useCallback(async () => {
+    setNameTaskSelected(name);
+    setTaskSelected(0);
+    setRender(!render);
+  }, [setNameTaskSelected, name, setTaskSelected, setRender, render]);
+
+  return <li onClick={openTask}>{name}</li>;
 }
 
 const SearchContainer = styled.div`
@@ -97,7 +111,7 @@ const SearchResponseContainer = styled.div`
   width: 20vw;
   height: fit-content;
   background-color: var(--light-green);
-  border: 1px solid var(--dark-green);
+  border: 1px solid var(--white);
   border-radius: 10px;
   padding: 10px;
   position: absolute;
@@ -122,6 +136,7 @@ const WrapperHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 2vw;
+  z-index: 2;
 
   img {
     width: 50px;

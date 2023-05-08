@@ -68,10 +68,32 @@ function getTasksBySearch(search) {
   return promise;
 }
 
+function getTaskById(taskId) {
+  const config = createHeaders();
+
+  const promise = axios.get(`${BASE_URL}/tasks/${taskId}`, config);
+
+  return promise;
+}
+
+function putAnotationTask(taskId, anotation) {
+  const config = createHeaders();
+
+  const promise = axios.put(
+    `${BASE_URL}/tasks/anotation/${taskId}`,
+    { anotation },
+    config
+  );
+
+  return promise;
+}
+
 export {
   postTask,
   getTasksUnfinished,
   getTasksFinished,
   editTaskFinished,
   getTasksBySearch,
+  getTaskById,
+  putAnotationTask,
 };

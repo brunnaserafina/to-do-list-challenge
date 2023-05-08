@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { getLists, postList } from "../../services/listsService";
 import ListsContext from "../../contexts/ListsContext";
 import { InputCreateNewListOrTask } from "../../common/InputCreateNewListOrTask";
+import TasksContext from "../../contexts/TasksContext";
 
 export default function Lists() {
   const [titleList, setTitleList] = useState("");
@@ -18,6 +19,7 @@ export default function Lists() {
     render,
     setRender,
   } = useContext(ListsContext);
+  const { setTaskSelected } = useContext(TasksContext);
 
   const handleItemClick = (index) => {
     setSelectedItemIndex(index);
@@ -69,6 +71,7 @@ export default function Lists() {
               handleItemClick(index);
               setIdListSelected(item.id);
               setTitleListSelected(item.title);
+              setTaskSelected(null);
             }}
           >
             <span>

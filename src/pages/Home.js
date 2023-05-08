@@ -4,9 +4,12 @@ import ListsContext from "../contexts/ListsContext";
 import Header from "../components/Header/Header";
 import DoneTasksList from "../components/Home/DoneTasksList";
 import ToDoTasksList from "../components/Home/ToDoTasksList";
+import SidebarTask from "../components/MoreInfoTask/SidebarTask";
+import TasksContext from "../contexts/TasksContext";
 
 export default function Home() {
   const { allLists } = useContext(ListsContext);
+  const { taskSelected } = useContext(TasksContext);
 
   return (
     <>
@@ -20,6 +23,8 @@ export default function Home() {
           <DoneTasksList />
         </WrapperHome>
       )}
+
+      {taskSelected !== null && <SidebarTask />}
     </>
   );
 }

@@ -1,30 +1,47 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { BsCheckLg } from "react-icons/bs";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
+import TasksContext from "../../contexts/TasksContext";
 import { editTaskFinished } from "../../services/tasksService";
 
 export default function ToDoTask({ name, id }) {
-  const { render, setRender } = useContext(ListsContext);
+  const { setRender } = useContext(ListsContext);
+  const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
+    useContext(TasksContext);
 
-  async function finishTask() {
+  const handleFinishTask = useCallback(async () => {
     try {
       await editTaskFinished({ taskId: id });
-      setRender(!render);
+      setRender((prev) => !prev);
     } catch (error) {
       toast("Não foi possível concluir a tarefa");
     }
-  }
+  }, [id, setRender]);
+
+  const handleOpenTask = useCallback(async () => {
+    setNameTaskSelected(name);
+    setTaskSelected(0);
+    setTaskIdSelected(id);
+    setRender((prev) => !prev);
+  }, [
+    setNameTaskSelected,
+    setTaskIdSelected,
+    setTaskSelected,
+    setRender,
+    id,
+    name,
+  ]);
 
   return (
     <li>
-      <Check onClick={finishTask}>
+      <Check onClick={handleFinishTask}>
         <div>
           <BsCheckLg color={"white"} />
         </div>
       </Check>
-      {name}
+      <p onClick={handleOpenTask}>{name}</p>
     </li>
   );
 }
