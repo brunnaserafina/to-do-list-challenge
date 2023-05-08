@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-// import { BsGoogle } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import WrapperForm from "../common/FormLoginAndSignUp";
@@ -7,17 +6,22 @@ import ListsContext from "../contexts/ListsContext";
 import { postLogin } from "../services/authentication";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({});
   const { setRender } = useContext(ListsContext);
   const navigate = useNavigate();
+
+  function handleForm({ name, value }) {
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
 
     try {
-      const response = await postLogin({ email, password });
-      console.log(response);
+      const response = await postLogin(form);
       toast("Login efetuado com sucesso! Seja bem-vindo(a)");
       localStorage.setItem(
         "to-do-list",
@@ -28,9 +32,9 @@ export default function Login() {
         })
       );
       navigate("/");
-      setRender((prev) => !prev);
+      setRender((prevRender) => !prevRender);
     } catch (err) {
-      toast(
+      toast.error(
         "Não foi possível efetuar seu login. Confira seus dados e tente novamente!"
       );
     }
@@ -45,9 +49,11 @@ export default function Login() {
         <input
           type="email"
           placeholder="nome@email.com"
+          name="email"
           autoFocus
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            handleForm({ name: e.target.name, value: e.target.value })
+          }
           required
           onInvalid={(F) =>
             F.target.setCustomValidity("Informe seu e-mail cadastrado.")
@@ -59,18 +65,16 @@ export default function Login() {
         <input
           type="password"
           placeholder="********"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          onChange={(e) =>
+            handleForm({ name: e.target.name, value: e.target.value })
+          }
           required
           onInvalid={(F) => F.target.setCustomValidity("Informe sua senha.")}
           onInput={(F) => F.target.setCustomValidity("")}
         />
 
         <button type="submit">Entrar</button>
-        {/* <button>
-          <BsGoogle fontSize={"20px"} />
-          <p>Acessar com Google</p>
-        </button> */}
       </form>
 
       <Link to={"/sign-up"}>Não possui conta? Cadastre-se!</Link>
