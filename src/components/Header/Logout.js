@@ -1,36 +1,35 @@
-import { IoIosArrowUp } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import { putLogout } from "../../services/authenticationService";
 
-export default function Logout() {
+export default function UserMenuWithLogout() {
   const navigate = useNavigate("");
   const name = JSON.parse(localStorage.getItem("to-do-list"))?.name;
   const email = JSON.parse(localStorage.getItem("to-do-list"))?.email;
 
-  async function logout() {
+  async function handleLogout() {
     try {
       await putLogout();
       localStorage.removeItem("to-do-list");
       navigate("/sign-in");
     } catch (error) {
-      console.log(error);
+      toast.error(
+        "Não foi possível sair da sua conta, atualize a página e tente novamente!"
+      );
     }
   }
 
   return (
-    <>
-      <IoIosArrowUp fontSize={"25px"} color={"white"} cursor={"pointer"} />
-      <WindowMoreOptionsPerfil>
-        <h2>{name}</h2>
-        <h3>{email}</h3>
-        <p onClick={logout}>Sair</p>
-      </WindowMoreOptionsPerfil>
-    </>
+    <UserMenu>
+      <h2>{name}</h2>
+      <h3>{email}</h3>
+      <p onClick={handleLogout}>Sair</p>
+    </UserMenu>
   );
 }
 
-const WindowMoreOptionsPerfil = styled.div`
+const UserMenu = styled.div`
   min-width: fit-content;
   width: 15vw;
   height: 70px;
