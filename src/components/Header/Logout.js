@@ -1,7 +1,7 @@
 import { IoIosArrowUp } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { putLogout } from "../../services/authentication";
+import { putLogout } from "../../services/authenticationService";
 
 export default function Logout() {
   const navigate = useNavigate("");

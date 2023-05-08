@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { postSignUp } from "../services/authentication";
+import { postSignUp } from "../services/authenticationService";
 import WrapperForm from "../common/FormLoginAndSignUp";
 
 export default function SignUp() {

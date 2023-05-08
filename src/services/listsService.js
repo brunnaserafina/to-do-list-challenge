@@ -1,18 +1,7 @@
 import axios from "axios";
+import createHeaders from "./token";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-
-function createHeaders() {
-  const token = JSON.parse(localStorage.getItem("to-do-list"))?.token;
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  return config;
-}
 
 function postList(body) {
   const config = createHeaders();

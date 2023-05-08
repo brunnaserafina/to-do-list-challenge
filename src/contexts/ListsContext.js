@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
+
 import { getLists } from "../services/listsService";
 
 const ListsContext = createContext();
@@ -26,7 +27,7 @@ export function ListsProvider({ children }) {
           setAllLists([]);
         }
       } catch (error) {
-        toast("Não foi possível carregar as listas");
+        toast.error("Não foi possível carregar as listas");
       }
     }
 
