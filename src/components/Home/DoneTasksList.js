@@ -1,16 +1,30 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
+import TasksContext from "../../contexts/TasksContext";
 import { getTasksFinished } from "../../services/tasksService";
 import { Check } from "./ToDoTaskItem";
 
 export default function DoneTasksList() {
   const [openFinishedTasks, setOpenFinishedTasks] = useState(false);
   const [tasksFinished, setTasksFinished] = useState([]);
-  const { idListSelected, render, allLists } = useContext(ListsContext);
+  const { idListSelected, render, allLists, setRender } =
+    useContext(ListsContext);
+  const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
+    useContext(TasksContext);
+
+  const handleOpenTask = useCallback(
+    async (id, name) => {
+      setNameTaskSelected(name);
+      setTaskSelected(0);
+      setTaskIdSelected(id);
+      setRender((prev) => !prev);
+    },
+    [setNameTaskSelected, setTaskIdSelected, setTaskSelected, setRender]
+  );
 
   useEffect(() => {
     async function getAllTasks() {
@@ -57,10 +71,10 @@ export default function DoneTasksList() {
       {openFinishedTasks && (
         <ul>
           {tasksFinished?.map((item, index) => (
-            <li key={index}>
+            <li key={index} onClick={() => handleOpenTask(item.id, item.name)}>
               <Check color={"gray"}>
                 <div>
-                  <AiOutlineClose />
+                  <AiOutlineClose color={"white"} />
                 </div>
               </Check>
               {item.name}
@@ -89,6 +103,7 @@ const DoneTasksContainer = styled.div`
     display: flex;
     align-items: center;
     margin-top: 5px;
+    cursor: pointer;
   }
 
   h2 {

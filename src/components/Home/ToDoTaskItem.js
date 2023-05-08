@@ -1,4 +1,5 @@
 import { useCallback, useContext } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 import { BsCheckLg } from "react-icons/bs";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -6,7 +7,7 @@ import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { editTaskFinished } from "../../services/tasksService";
 
-export default function ToDoTask({ name, id }) {
+export default function ToDoTask({ name, id, isCompleted }) {
   const { setRender } = useContext(ListsContext);
   const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
     useContext(TasksContext);
@@ -36,22 +37,36 @@ export default function ToDoTask({ name, id }) {
 
   return (
     <li>
-      <Check onClick={handleFinishTask}>
-        <div>
-          <BsCheckLg color={"white"} />
-        </div>
-      </Check>
-      <p onClick={handleOpenTask}>{name}</p>
+      {!isCompleted ? (
+        <Check onClick={handleFinishTask}>
+          <div>
+            <BsCheckLg color={"white"} />
+          </div>
+        </Check>
+      ) : (
+        <Check color={"gray"}>
+          <div>
+            <AiOutlineClose color={"white"} />
+          </div>
+        </Check>
+      )}
+
+      <TitleList onClick={handleOpenTask} isCompleted={isCompleted}>
+        {name}
+      </TitleList>
     </li>
   );
 }
+
+const TitleList = styled.p`
+  color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
+`;
 
 export const Check = styled.div`
   width: 25px;
   height: 25px;
   border-radius: 40px;
-  background-color: ${(props) =>
-    props.color ? "var(--gray)" : "var(--light-green)"};
+  background-color: ${(props) => (props.color ? "gray" : "var(--light-green)")};
   margin-right: 8px;
   display: flex;
   justify-content: center;

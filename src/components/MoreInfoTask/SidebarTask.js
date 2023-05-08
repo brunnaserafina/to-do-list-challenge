@@ -3,10 +3,13 @@ import styled from "styled-components";
 import TasksContext from "../../contexts/TasksContext";
 import { getTaskById, putAnotationTask } from "../../services/tasksService";
 import ToDoTask from "../Home/ToDoTaskItem";
+import DeleteTask from "./DeleteTask";
+import { FiLogOut } from "react-icons/fi";
 
 export default function SidebarTask() {
   const [tasks, setTasks] = useState([]);
-  const { taskIdSelected, anotation } = useContext(TasksContext);
+  const { taskIdSelected, anotation, setTaskSelected } =
+    useContext(TasksContext);
   const [writes, setWrites] = useState([]);
 
   useEffect(() => {
@@ -38,7 +41,11 @@ export default function SidebarTask() {
       {tasks.length !== 0 &&
         tasks?.map((item, index) => (
           <div key={index}>
-            <ToDoTask name={item.name} id={item.id} />
+            <ToDoTask
+              name={item.name}
+              id={item.id}
+              isCompleted={item.is_completed}
+            />
             <textarea
               value={writes[index]}
               onChange={(e) => {
@@ -51,12 +58,34 @@ export default function SidebarTask() {
               rows="10"
               placeholder="Adicionar anotação"
             ></textarea>
-            <button onClick={() => handleSave(item.id, index)}>Salvar</button>
+            <Button
+              isCompleted={item.is_completed}
+              onClick={() => handleSave(item.id, index)}
+            >
+              Salvar
+            </Button>
           </div>
         ))}
+
+      <CloseSideBarAndDeleteTask>
+        <FiLogOut
+          fontSize={"25px"}
+          cursor={"pointer"}
+          onClick={() => setTaskSelected(null)}
+        />
+
+        <DeleteTask taskIdSelected={taskIdSelected} />
+      </CloseSideBarAndDeleteTask>
     </WrapperSideBarTask>
   );
 }
+
+const CloseSideBarAndDeleteTask = styled.div`
+  color: var(--dark-green);
+  margin-bottom: 60px;
+  display: flex;
+  justify-content: space-between;
+`;
 
 const WrapperSideBarTask = styled.span`
   position: fixed;
@@ -67,6 +96,9 @@ const WrapperSideBarTask = styled.span`
   top: 70px;
   padding: 5vh;
   z-index: 1 !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   li {
     display: flex;
@@ -93,19 +125,23 @@ const WrapperSideBarTask = styled.span`
 
   textarea:focus {
     outline: 0;
-    border: solid 1.5px var(--light-green);
+    border: ${(props) =>
+      props.isCompleted
+        ? "solid 1.5px gray"
+        : "solid 1.5px var(--light-green)"};
     caret-color: var(--dark-green);
   }
+`;
 
-  button {
-    width: 100%;
-    border: none;
-    background-color: var(--light-green);
-    margin-top: 5px;
-    height: 25px;
-    color: var(--white);
-    font-weight: 700;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+const Button = styled.button`
+  width: 100%;
+  border: none;
+  background-color: ${(props) =>
+    props.isCompleted ? "gray" : "var(--light-green)"};
+  margin-top: 5px;
+  height: 25px;
+  color: var(--white);
+  font-weight: 700;
+  border-radius: 5px;
+  cursor: pointer;
 `;

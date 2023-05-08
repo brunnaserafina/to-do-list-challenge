@@ -41,8 +41,8 @@ export default function Lists() {
       const newList = await getLists();
 
       if (newList.data.length === 1) {
-        setTitleListSelected(newList.data[0].title);
-        setIdListSelected(newList.data[0].id);
+        setTitleListSelected(newList.data[0]?.title);
+        setIdListSelected(newList.data[0]?.id);
         setSelectedItemIndex(0);
       }
 

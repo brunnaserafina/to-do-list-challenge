@@ -15,7 +15,7 @@ export function TasksProvider({ children }) {
     async function task() {
       try {
         const taskResponse = await getTaskById(taskIdSelected);
-        setAnotation(taskResponse.data[0].anotation);
+        setAnotation(taskResponse.data[0]?.anotation);
       } catch (error) {
         console.log(error);
       }

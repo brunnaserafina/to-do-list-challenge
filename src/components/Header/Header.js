@@ -81,22 +81,32 @@ function SearchResponse({ tasksSearch }) {
     <SearchResponseContainer>
       <ul>
         {tasksSearch.map((item, index) => (
-          <ListTask key={index} name={item.name} />
+          <ListTask key={index} name={item.name} id={item.id} />
         ))}
       </ul>
     </SearchResponseContainer>
   );
 }
 
-function ListTask({ name }) {
+function ListTask({ name, id }) {
   const { render, setRender } = useContext(ListsContext);
-  const { setNameTaskSelected, setTaskSelected } = useContext(TasksContext);
+  const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
+    useContext(TasksContext);
 
   const openTask = useCallback(async () => {
     setNameTaskSelected(name);
     setTaskSelected(0);
     setRender(!render);
-  }, [setNameTaskSelected, name, setTaskSelected, setRender, render]);
+    setTaskIdSelected(id);
+  }, [
+    setNameTaskSelected,
+    name,
+    setTaskSelected,
+    setRender,
+    render,
+    id,
+    setTaskIdSelected,
+  ]);
 
   return <li onClick={openTask}>{name}</li>;
 }

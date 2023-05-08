@@ -88,6 +88,14 @@ function putAnotationTask(taskId, anotation) {
   return promise;
 }
 
+function deleteTask(taskId) {
+  const config = createHeaders();
+
+  const promise = axios.delete(`${BASE_URL}/tasks/${taskId}`, config);
+
+  return promise;
+}
+
 export {
   postTask,
   getTasksUnfinished,
@@ -96,4 +104,5 @@ export {
   getTasksBySearch,
   getTaskById,
   putAnotationTask,
+  deleteTask,
 };
