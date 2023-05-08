@@ -88,6 +88,7 @@ export default function DoneTasksList() {
 
 const DoneTasksContainer = styled.div`
   width: 22.5vw;
+  margin-bottom: 70px;
 
   span {
     padding-right: 2.5vw;

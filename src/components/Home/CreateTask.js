@@ -30,7 +30,6 @@ export default function CreateTask({
       }
 
       setTitleTask("");
-      setCreatedNewTask(false);
       setRender(!render);
     } catch (error) {
       toast("Não foi possível adicionar a tarefa, tente novamente!");
@@ -39,7 +38,6 @@ export default function CreateTask({
     titleTask,
     setTitleTask,
     idListSelected,
-    setCreatedNewTask,
     render,
     setRender,
     allLists,

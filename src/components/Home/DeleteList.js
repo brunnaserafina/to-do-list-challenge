@@ -17,7 +17,7 @@ export default function DeleteList({ setCreatedNewTask, setTitleTask }) {
   const { setTaskSelected } = useContext(TasksContext);
 
   const handleDeleteList = useCallback(async () => {
-    if (window.confirm("Deseja deletar?")) {
+    if (window.confirm("Deseja deletar esta lista?")) {
       try {
         if (idListSelected === null) {
           await deleteList({ listId: allLists[0].id });
