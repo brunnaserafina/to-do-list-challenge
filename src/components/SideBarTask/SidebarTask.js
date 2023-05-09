@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 export default function SidebarTask() {
   const [tasks, setTasks] = useState([]);
   const [annotations, setAnnotations] = useState([]);
-  const { render } = useContext(ListsContext);
+  const { setRender } = useContext(ListsContext);
   const { taskIdSelected, anotation, setTaskSelected } =
     useContext(TasksContext);
 
@@ -26,7 +26,7 @@ export default function SidebarTask() {
       }
     }
     fetchTask();
-  }, [taskIdSelected, anotation, render]);
+  }, [taskIdSelected, anotation]);
 
   const handleSave = async (taskId, index) => {
     try {
@@ -34,6 +34,7 @@ export default function SidebarTask() {
       const newAnnotations = [...annotations];
       newAnnotations[index] = annotations[index];
       setAnnotations(newAnnotations);
+      setRender((prev) => !prev);
     } catch (error) {
       toast.error("Não foi possível salvar sua anotação, tente novamente!");
     }

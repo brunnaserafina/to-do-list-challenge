@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { BsSearch } from "react-icons/bs";
 import styled from "styled-components";
-
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { getTasksBySearch } from "../../services/tasksService";
@@ -49,6 +48,7 @@ export default function Search() {
                 listName={item.lists.title}
                 setTasksSearch={setTasksSearch}
                 setSearchInput={setSearchInput}
+                indexList={item.lists.id}
               />
             ))}
           </ul>
@@ -65,21 +65,29 @@ function ListTask({
   listName,
   setTasksSearch,
   setSearchInput,
+  indexList,
 }) {
-  const { render, setRender, setIdListSelected, setTitleListSelected } =
-    useContext(ListsContext);
+  const {
+    allLists,
+    render,
+    setRender,
+    setIdListSelected,
+    setTitleListSelected,
+    setSelectedItemIndex,
+  } = useContext(ListsContext);
   const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
     useContext(TasksContext);
 
   const openTask = async () => {
     setNameTaskSelected(name);
     setTaskSelected(0);
-    setRender(!render);
     setTaskIdSelected(id);
     setIdListSelected(listId);
     setTitleListSelected(listName);
     setTasksSearch([]);
     setSearchInput("");
+    setSelectedItemIndex(allLists.findIndex((item) => item.id === indexList));
+    setRender(!render);
   };
 
   return <li onClick={openTask}>{name}</li>;
