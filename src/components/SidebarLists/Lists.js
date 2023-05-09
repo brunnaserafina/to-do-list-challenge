@@ -17,7 +17,6 @@ export default function Lists() {
     setSelectedItemIndex,
     setIdListSelected,
     setTitleListSelected,
-    render,
     setRender,
   } = useContext(ListsContext);
 
@@ -41,7 +40,7 @@ export default function Lists() {
 
       setTitleList("");
       setOpenInputCreatedNewList(false);
-      setRender(!render);
+      setRender((prev) => !prev);
     } catch (error) {
       toast("Não foi possível adicionar a lista, tente novamente!");
     }

@@ -1,5 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { getTaskById } from "../services/tasksService";
+import ListsContext from "./ListsContext";
 
 const TasksContext = createContext();
 
@@ -10,6 +11,7 @@ export function TasksProvider({ children }) {
   const [taskIdSelected, setTaskIdSelected] = useState(null);
   const [nameTaskSelected, setNameTaskSelected] = useState("");
   const [anotation, setAnotation] = useState("");
+  const { render } = useContext(ListsContext);
 
   useEffect(() => {
     async function getTask() {
@@ -19,7 +21,7 @@ export function TasksProvider({ children }) {
       }
     }
     getTask();
-  }, [taskIdSelected, taskSelected, anotation]);
+  }, [taskIdSelected, taskSelected, anotation, render]);
 
   return (
     <TasksContext.Provider
