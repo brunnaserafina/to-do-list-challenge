@@ -1,6 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { toast } from "react-toastify";
-
 import { getLists } from "../services/listsService";
 
 const ListsContext = createContext();
@@ -9,25 +7,21 @@ export default ListsContext;
 
 export function ListsProvider({ children }) {
   const [allLists, setAllLists] = useState([]);
-  const [selectedItemIndex, setSelectedItemIndex] = useState(0);
   const [idListSelected, setIdListSelected] = useState(null);
   const [titleListSelected, setTitleListSelected] = useState("");
+  const [selectedItemIndex, setSelectedItemIndex] = useState(0);
   const [render, setRender] = useState(false);
 
   useEffect(() => {
     async function getAllLists() {
-      try {
-        const allLists = await getLists();
+      const lists = await getLists();
 
-        if (allLists.data.length !== 0) {
-          setAllLists(allLists?.data);
-        } else {
-          setTitleListSelected("");
-          setIdListSelected(null);
-          setAllLists([]);
-        }
-      } catch (error) {
-        toast.error("Não foi possível carregar as listas");
+      if (lists.data.length === 0) {
+        setTitleListSelected("");
+        setIdListSelected(null);
+        setAllLists([]);
+      } else {
+        setAllLists(lists?.data);
       }
     }
 

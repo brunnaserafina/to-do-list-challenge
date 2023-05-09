@@ -1,56 +1,43 @@
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { deleteList, getLists } from "../../services/listsService";
 
-export default function DeleteList({ setCreatedNewTask, setTitleTask }) {
+export default function DeleteList() {
+  const { setTaskSelected } = useContext(TasksContext);
   const {
+    allLists,
     idListSelected,
     setRender,
     setTitleListSelected,
     setSelectedItemIndex,
     setIdListSelected,
-    allLists,
   } = useContext(ListsContext);
-  const { setTaskSelected } = useContext(TasksContext);
 
-  const handleDeleteList = useCallback(async () => {
+  const handleDeleteList = async () => {
     if (window.confirm("Deseja deletar esta lista?")) {
       try {
-        if (idListSelected === null) {
-          await deleteList({ listId: allLists[0].id });
-        } else {
-          await deleteList({ listId: idListSelected });
-        }
-
-        const allList = await getLists();
-        setCreatedNewTask(false);
-        setTitleTask("");
+        await deleteList({
+          listId: idListSelected ? idListSelected : allLists[0].id,
+        });
         setTaskSelected(null);
-        if (allList.data.length > 0) {
-          setTitleListSelected(allList?.data[0].title || "");
-          setIdListSelected(allList?.data[0].id);
+
+        const updatedLists = await getLists();
+
+        if (updatedLists.data.length > 0) {
+          setTitleListSelected(updatedLists?.data[0].title);
+          setIdListSelected(updatedLists?.data[0].id);
           setSelectedItemIndex(0);
         }
 
         setRender((prev) => !prev);
       } catch (error) {
-        toast("Não foi possível adicionar a tarefa, tente novamente!");
+        toast("Não foi possível remover a lista, tente novamente!");
       }
     }
-  }, [
-    idListSelected,
-    setTitleTask,
-    setRender,
-    setCreatedNewTask,
-    setTitleListSelected,
-    setIdListSelected,
-    setSelectedItemIndex,
-    allLists,
-    setTaskSelected,
-  ]);
+  };
 
   return (
     <RiDeleteBinLine

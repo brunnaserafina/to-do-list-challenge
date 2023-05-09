@@ -1,74 +1,36 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
+import { useContext, useEffect, useState } from "react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { toast } from "react-toastify";
 import styled from "styled-components";
+import TaskItem from "./TaskItem";
 import ListsContext from "../../contexts/ListsContext";
-import TasksContext from "../../contexts/TasksContext";
-import {
-  editTaskUnfinished,
-  getTasksFinished,
-} from "../../services/tasksService";
-import { Check } from "./ToDoTaskItem";
+import { getTasksFinished } from "../../services/tasksService";
 
 export default function DoneTasksList() {
   const [openFinishedTasks, setOpenFinishedTasks] = useState(false);
-  const [tasksFinished, setTasksFinished] = useState([]);
-  const { idListSelected, render, allLists, setRender } =
-    useContext(ListsContext);
-  const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
-    useContext(TasksContext);
-
-  const handleUnfinishTask = useCallback(
-    async (id) => {
-      try {
-        await editTaskUnfinished({ taskId: id });
-        setRender((prev) => !prev);
-      } catch (error) {
-        toast("Não foi possível atualizar a tarefa");
-      }
-    },
-    [setRender]
-  );
-
-  const handleOpenTask = useCallback(
-    async (id, name) => {
-      setNameTaskSelected(name);
-      setTaskSelected(0);
-      setTaskIdSelected(id);
-      setRender((prev) => !prev);
-    },
-    [setNameTaskSelected, setTaskIdSelected, setTaskSelected, setRender]
-  );
+  const [doneTasks, setDoneTasks] = useState([]);
+  const { allLists, idListSelected } = useContext(ListsContext);
 
   useEffect(() => {
     async function getAllTasks() {
       try {
-        let allTasksFinished;
+        const tasksFinished = await getTasksFinished({
+          listId: idListSelected ? idListSelected : allLists[0].id,
+        });
 
-        if (idListSelected === null) {
-          allTasksFinished = await getTasksFinished({
-            listId: allLists[0].id,
-          });
-        } else {
-          allTasksFinished = await getTasksFinished({
-            listId: idListSelected,
-          });
-        }
-
-        setTasksFinished(allTasksFinished?.data);
+        setDoneTasks(tasksFinished?.data);
       } catch (error) {
-        toast("Não foi possível carregar as tarefas");
+        toast.error("Não foi possível carregar as tarefas");
       }
     }
 
     getAllTasks();
-  }, [idListSelected, setTasksFinished, render, allLists]);
+  }, [allLists, idListSelected]);
 
   return (
     <DoneTasksContainer>
       <span>
-        <h2>Tarefas concluídas ({tasksFinished?.length})</h2>
+        <h2>Tarefas concluídas ({doneTasks?.length})</h2>
 
         {openFinishedTasks ? (
           <IoIosArrowUp
@@ -85,17 +47,13 @@ export default function DoneTasksList() {
 
       {openFinishedTasks && (
         <ul>
-          {tasksFinished?.map((item, index) => (
-            <li key={index}>
-              <Check color={"gray"} onClick={() => handleUnfinishTask(item.id)}>
-                <div>
-                  <AiOutlineClose color={"white"} />
-                </div>
-              </Check>
-              <p onClick={() => handleOpenTask(item.id, item.name)}>
-                {item.name}
-              </p>
-            </li>
+          {doneTasks?.map((item, index) => (
+            <TaskItem
+              key={index}
+              id={item.id}
+              name={item.name}
+              isCompleted={item.is_completed}
+            />
           ))}
         </ul>
       )}
@@ -116,7 +74,6 @@ const DoneTasksContainer = styled.div`
   }
 
   li {
-    text-decoration: line-through;
     color: gray;
     display: flex;
     align-items: center;

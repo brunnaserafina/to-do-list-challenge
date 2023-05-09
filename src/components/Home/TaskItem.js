@@ -1,77 +1,69 @@
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsCheckLg } from "react-icons/bs";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
-import {
-  editTaskFinished,
-  editTaskUnfinished,
-} from "../../services/tasksService";
+import { editTaskFinished } from "../../services/tasksService";
+import { editTaskUnfinished } from "../../services/tasksService";
 
-export default function ToDoTask({ name, id, isCompleted }) {
+export default function TaskItem({ id, name, isCompleted }) {
   const { setRender } = useContext(ListsContext);
   const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
     useContext(TasksContext);
 
-  const handleUnfinishTask = useCallback(async () => {
+  const handleUnfinishTask = async () => {
     try {
       await editTaskUnfinished({ taskId: id });
       setRender((prev) => !prev);
     } catch (error) {
-      toast("Não foi possível atualizar a tarefa");
+      toast.error("Não foi possível atualizar a tarefa");
     }
-  }, [setRender, id]);
+  };
 
-  const handleFinishTask = useCallback(async () => {
+  const handleFinishTask = async () => {
     try {
       await editTaskFinished({ taskId: id });
       setRender((prev) => !prev);
     } catch (error) {
-      toast("Não foi possível concluir a tarefa");
+      toast.error("Não foi possível concluir a tarefa");
     }
-  }, [id, setRender]);
+  };
 
-  const handleOpenTask = useCallback(async () => {
+  const handleOpenTask = () => {
     setNameTaskSelected(name);
-    setTaskSelected(0);
+    setTaskSelected(true);
     setTaskIdSelected(id);
     setRender((prev) => !prev);
-  }, [
-    setNameTaskSelected,
-    setTaskIdSelected,
-    setTaskSelected,
-    setRender,
-    id,
-    name,
-  ]);
+  };
 
   return (
     <li>
-      {!isCompleted ? (
-        <Check onClick={handleFinishTask}>
-          <div>
-            <BsCheckLg color={"white"} cursor={"pointer"} />
-          </div>
-        </Check>
-      ) : (
+      {isCompleted ? (
         <Check color={"gray"} onClick={handleUnfinishTask}>
           <div>
             <AiOutlineClose color={"white"} cursor={"pointer"} />
           </div>
         </Check>
+      ) : (
+        <Check onClick={handleFinishTask}>
+          <div>
+            <BsCheckLg color={"white"} cursor={"pointer"} />
+          </div>
+        </Check>
       )}
 
-      <TitleList onClick={handleOpenTask} isCompleted={isCompleted}>
+      <TitleTask onClick={handleOpenTask} isCompleted={isCompleted}>
         {name}
-      </TitleList>
+      </TitleTask>
     </li>
   );
 }
 
-const TitleList = styled.p`
+const TitleTask = styled.p`
   color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
+  text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
   max-width: 88%;
   white-space: wrap;
   overflow: hidden;

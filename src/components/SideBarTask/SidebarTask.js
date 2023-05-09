@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import TasksContext from "../../contexts/TasksContext";
 import { getTaskById, putAnotationTask } from "../../services/tasksService";
-import ToDoTask from "../Home/ToDoTaskItem";
+import TaskItem from "../Home/TaskItem";
 import DeleteTask from "./DeleteTask";
 import { FiLogOut } from "react-icons/fi";
 import ListsContext from "../../contexts/ListsContext";
@@ -43,7 +43,7 @@ export default function SidebarTask() {
       {tasks.length !== 0 &&
         tasks?.map((item, index) => (
           <div key={index}>
-            <ToDoTask
+            <TaskItem
               name={item.name}
               id={item.id}
               isCompleted={item.is_completed}

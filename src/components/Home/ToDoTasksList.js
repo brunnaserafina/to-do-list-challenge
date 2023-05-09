@@ -1,70 +1,58 @@
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { AiOutlinePlus } from "react-icons/ai";
 import styled from "styled-components";
-import DeleteList from "./DeleteList";
-import ListsContext from "../../contexts/ListsContext";
-import ToDoTask, { Check } from "./ToDoTaskItem";
 import CreateTask from "./CreateTask";
+import DeleteList from "./DeleteList";
+import TaskItem, { Check } from "./TaskItem";
+import ListsContext from "../../contexts/ListsContext";
 import { getTasksUnfinished } from "../../services/tasksService";
-import { toast } from "react-toastify";
 
 export default function ToDoTasksList() {
   const [createdNewTask, setCreatedNewTask] = useState(false);
-  const [tasksUnfinished, setTasksUnfinished] = useState([]);
-  const [titleTask, setTitleTask] = useState("");
-  const { titleListSelected } = useContext(ListsContext);
-  const { allLists, idListSelected, setRender } = useContext(ListsContext);
+  const [toDoTasks, setToDoTasks] = useState([]);
+  const { allLists, idListSelected, titleListSelected } =
+    useContext(ListsContext);
+  const hasLists = allLists.length > 0;
 
   useEffect(() => {
     async function getAllTasks() {
       try {
-        let allTasksUnfinished;
+        const tasksUnfinished = await getTasksUnfinished({
+          listId: idListSelected ? idListSelected : allLists[0].id,
+        });
 
-        if (idListSelected === null) {
-          allTasksUnfinished = await getTasksUnfinished({
-            listId: allLists[0].id,
-          });
-        } else {
-          allTasksUnfinished = await getTasksUnfinished({
-            listId: idListSelected,
-          });
-        }
-
-        setTasksUnfinished(allTasksUnfinished.data);
+        setToDoTasks(tasksUnfinished.data);
       } catch (error) {
-        toast("Não foi possível carregar as tarefas");
+        toast.error("Não foi possível carregar as tarefas");
       }
     }
-
     getAllTasks();
-  }, [idListSelected, allLists, setRender]);
+  }, [allLists, idListSelected]);
 
   return (
-    <ToDoTasks>
+    <WrapperToDoTasks>
       <span>
-        {idListSelected === null && allLists.length > 0 ? (
-          <h1>{allLists[0].title}</h1>
-        ) : (
-          <h1>{titleListSelected}</h1>
-        )}
-        <DeleteList
-          setCreatedNewTask={setCreatedNewTask}
-          setTitleTask={setTitleTask}
-        />
+        <h1>
+          {!idListSelected && hasLists ? allLists[0].title : titleListSelected}
+        </h1>
+
+        <DeleteList />
       </span>
 
       <ul>
-        {tasksUnfinished.map((item, index) => (
-          <ToDoTask key={index} name={item.name} id={item.id}></ToDoTask>
+        {toDoTasks.map((item, index) => (
+          <TaskItem
+            key={index}
+            name={item.name}
+            id={item.id}
+            isCompleted={item.is_completed}
+          />
         ))}
       </ul>
 
       {createdNewTask ? (
-        <CreateTask
-          titleTask={titleTask}
-          setTitleTask={setTitleTask}
-          setCreatedNewTask={setCreatedNewTask}
-        />
+        <CreateTask setCreatedNewTask={setCreatedNewTask} />
       ) : (
         <div onClick={() => setCreatedNewTask(true)}>
           <Check>
@@ -73,11 +61,11 @@ export default function ToDoTasksList() {
           <p>Adicionar tarefa</p>
         </div>
       )}
-    </ToDoTasks>
+    </WrapperToDoTasks>
   );
 }
 
-const ToDoTasks = styled.div`
+const WrapperToDoTasks = styled.div`
   width: 22.5vw;
   min-height: 30vh;
   height: fit-content;
