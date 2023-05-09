@@ -98,11 +98,7 @@ export default function SignUp() {
           onInvalid={(F) => F.target.setCustomValidity("Insira sua senha.")}
           onInput={(F) => F.target.setCustomValidity("")}
         />
-        {errorPassword ? (
-          <p>A senha deve possuir no mínimo 6 caracteres!</p>
-        ) : (
-          ""
-        )}
+        {errorPassword && <p>A senha deve possuir no mínimo 6 caracteres!</p>}
 
         <label>Confirmar senha</label>
         <input

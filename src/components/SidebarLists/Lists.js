@@ -9,7 +9,7 @@ import { getLists, postList } from "../../services/listsService";
 
 export default function Lists() {
   const [openInputCreatedNewList, setOpenInputCreatedNewList] = useState(false);
-  const [titleList, setTitleList] = useState("");
+  const [titleInputList, setTitleInputList] = useState("");
   const { setTaskSelected } = useContext(TasksContext);
   const {
     allLists,
@@ -25,10 +25,10 @@ export default function Lists() {
   };
 
   const addNewList = async () => {
-    if (titleList === "") return;
+    if (titleInputList === "") return;
 
     try {
-      await postList({ title: titleList });
+      await postList({ title: titleInputList });
 
       const lists = await getLists();
 
@@ -38,7 +38,7 @@ export default function Lists() {
         setSelectedItemIndex(0);
       }
 
-      setTitleList("");
+      setTitleInputList("");
       setOpenInputCreatedNewList(false);
       setRender((prev) => !prev);
     } catch (error) {
@@ -79,8 +79,8 @@ export default function Lists() {
           <input
             type="text"
             placeholder="Digite o título da sua nova lista"
-            value={titleList}
-            onChange={(e) => setTitleList(e.target.value)}
+            value={titleInputList}
+            onChange={(e) => setTitleInputList(e.target.value)}
             onKeyDown={handleKeyDown}
             autoFocus
           />
