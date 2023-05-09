@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { useState } from "react";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import styled from "styled-components";
 import Lists from "./Lists";
 
 export default function Sidebar() {
@@ -10,10 +10,17 @@ export default function Sidebar() {
     <WrapperSideBar>
       <span>
         <h1>Listas</h1>
+
         {openLists ? (
-          <IoIosArrowUp onClick={() => setOpenLists(!openLists)} />
+          <IoIosArrowUp
+            cursor={"pointer"}
+            onClick={() => setOpenLists(!openLists)}
+          />
         ) : (
-          <IoIosArrowDown onClick={() => setOpenLists(!openLists)} />
+          <IoIosArrowDown
+            cursor={"pointer"}
+            onClick={() => setOpenLists(!openLists)}
+          />
         )}
       </span>
 

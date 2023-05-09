@@ -1,15 +1,16 @@
-import { useCallback, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { BsCheck2, BsPlus } from "react-icons/bs";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { getLists, postList } from "../../services/listsService";
 import ListsContext from "../../contexts/ListsContext";
-import { InputCreateNewListOrTask } from "../../common/InputCreateNewListOrTask";
 import TasksContext from "../../contexts/TasksContext";
+import { InputCreateNewListOrTask } from "../../common/InputCreateNewListOrTask";
+import { getLists, postList } from "../../services/listsService";
 
 export default function Lists() {
-  const [titleList, setTitleList] = useState("");
   const [openInputCreatedNewList, setOpenInputCreatedNewList] = useState(false);
+  const [titleList, setTitleList] = useState("");
+  const { setTaskSelected } = useContext(TasksContext);
   const {
     allLists,
     selectedItemIndex,
@@ -19,30 +20,22 @@ export default function Lists() {
     render,
     setRender,
   } = useContext(ListsContext);
-  const { setTaskSelected } = useContext(TasksContext);
 
   const handleItemClick = (index) => {
     setSelectedItemIndex(index);
   };
 
-  function handleKeyDown(event) {
-    if (event.keyCode === 13) {
-      addNewList();
-    }
-  }
-
-  const addNewList = useCallback(async () => {
-    if (titleList === "") {
-      return;
-    }
+  const addNewList = async () => {
+    if (titleList === "") return;
 
     try {
       await postList({ title: titleList });
-      const newList = await getLists();
 
-      if (newList.data.length === 1) {
-        setTitleListSelected(newList.data[0]?.title);
-        setIdListSelected(newList.data[0]?.id);
+      const lists = await getLists();
+
+      if (lists.data.length === 1) {
+        setTitleListSelected(lists.data[0]?.title);
+        setIdListSelected(lists.data[0]?.id);
         setSelectedItemIndex(0);
       }
 
@@ -52,14 +45,13 @@ export default function Lists() {
     } catch (error) {
       toast("Não foi possível adicionar a lista, tente novamente!");
     }
-  }, [
-    titleList,
-    render,
-    setRender,
-    setIdListSelected,
-    setSelectedItemIndex,
-    setTitleListSelected,
-  ]);
+  };
+
+  function handleKeyDown(event) {
+    if (event.keyCode === 13) {
+      addNewList();
+    }
+  }
 
   return (
     <>

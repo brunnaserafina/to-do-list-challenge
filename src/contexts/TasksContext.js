@@ -12,17 +12,11 @@ export function TasksProvider({ children }) {
   const [anotation, setAnotation] = useState("");
 
   useEffect(() => {
-    async function task() {
-      try {
-        if (taskIdSelected !== null) {
-          const taskResponse = await getTaskById(taskIdSelected);
-          setAnotation(taskResponse.data[0]?.anotation);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    async function getTask() {
+      const taskResponse = await getTaskById(taskIdSelected);
+      setAnotation(taskResponse.data[0]?.anotation);
     }
-    task();
+    getTask();
   }, [taskIdSelected, taskSelected, anotation]);
 
   return (

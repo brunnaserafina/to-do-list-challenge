@@ -1,74 +1,76 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import TasksContext from "../../contexts/TasksContext";
-import { getTaskById, putAnotationTask } from "../../services/tasksService";
+import { FiLogOut } from "react-icons/fi";
 import TaskItem from "../Home/TaskItem";
 import DeleteTask from "./DeleteTask";
-import { FiLogOut } from "react-icons/fi";
 import ListsContext from "../../contexts/ListsContext";
+import TasksContext from "../../contexts/TasksContext";
+import { getTaskById, putAnotationTask } from "../../services/tasksService";
+import { toast } from "react-toastify";
 
 export default function SidebarTask() {
   const [tasks, setTasks] = useState([]);
+  const [annotations, setAnnotations] = useState([]);
+  const { render } = useContext(ListsContext);
   const { taskIdSelected, anotation, setTaskSelected } =
     useContext(TasksContext);
-  const { render } = useContext(ListsContext);
-  const [writes, setWrites] = useState([]);
 
   useEffect(() => {
     async function fetchTask() {
       try {
-        const promise = await getTaskById(taskIdSelected);
-        setTasks(promise.data);
-        setWrites(new Array(promise.data.length).fill(anotation));
+        const task = await getTaskById(taskIdSelected);
+        setTasks(task.data);
+        setAnnotations([anotation]);
       } catch (error) {
-        console.log("aqui", error);
+        toast.error("Não foi possível carregar a tarefa");
       }
     }
     fetchTask();
   }, [taskIdSelected, anotation, render]);
 
-  const handleSave = async (id, index) => {
+  const handleSave = async (taskId, index) => {
     try {
-      await putAnotationTask(id, writes[index]);
-      const newWrites = [...writes];
-      newWrites[index] = writes[index];
-      setWrites(newWrites);
+      await putAnotationTask(taskId, annotations[index]);
+      const newAnnotations = [...annotations];
+      newAnnotations[index] = annotations[index];
+      setAnnotations(newAnnotations);
     } catch (error) {
-      console.log(error);
+      toast.error("Não foi possível salvar sua anotação, tente novamente!");
     }
   };
 
   return (
     <WrapperSideBarTask>
-      {tasks.length !== 0 &&
-        tasks?.map((item, index) => (
-          <div key={index}>
-            <TaskItem
-              name={item.name}
-              id={item.id}
-              isCompleted={item.is_completed}
-            />
-            <TextArea
-              value={writes[index]}
-              onChange={(e) => {
-                const newWrites = [...writes];
-                newWrites[index] = e.target.value;
-                setWrites(newWrites);
-              }}
-              id={item.id}
-              cols="30"
-              rows="10"
-              placeholder="Adicionar anotação"
-              isCompleted={item.is_completed}
-            ></TextArea>
-            <Button
-              isCompleted={item.is_completed}
-              onClick={() => handleSave(item.id, index)}
-            >
-              Salvar
-            </Button>
-          </div>
-        ))}
+      {tasks?.map((item, index) => (
+        <div key={index}>
+          <TaskItem
+            id={item.id}
+            name={item.name}
+            isCompleted={item.is_completed}
+          />
+
+          <TextArea
+            value={annotations[index]}
+            onChange={(e) => {
+              const newanotations = [...annotations];
+              newanotations[index] = e.target.value;
+              setAnnotations(newanotations);
+            }}
+            id={item.id}
+            cols="30"
+            rows="10"
+            placeholder="Adicionar anotação"
+            isCompleted={item.is_completed}
+          ></TextArea>
+
+          <Button
+            isCompleted={item.is_completed}
+            onClick={() => handleSave(item.id, index)}
+          >
+            Salvar
+          </Button>
+        </div>
+      ))}
 
       <CloseSideBarAndDeleteTask>
         <FiLogOut
