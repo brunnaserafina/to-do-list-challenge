@@ -1,8 +1,7 @@
 import { useContext } from "react";
-import { AiOutlineClose } from "react-icons/ai";
-import { BsCheckLg } from "react-icons/bs";
 import { toast } from "react-toastify";
 import styled from "styled-components";
+import { IconCheckTask, IconCloseTask } from "../../common/Icons";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { editTaskFinished } from "../../services/tasksService";
@@ -43,13 +42,13 @@ export default function TaskItem({ id, name, isCompleted }) {
       {isCompleted ? (
         <Check color={"gray"} onClick={handleUnfinishTask}>
           <div>
-            <AiOutlineClose color={"white"} cursor={"pointer"} />
+            <IconCloseTask color={"white"} cursor={"pointer"} />
           </div>
         </Check>
       ) : (
         <Check onClick={handleFinishTask}>
           <div>
-            <BsCheckLg color={"white"} cursor={"pointer"} />
+            <IconCheckTask color={"white"} cursor={"pointer"} />
           </div>
         </Check>
       )}

@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { FiLogOut } from "react-icons/fi";
 import TaskItem from "../Home/TaskItem";
 import DeleteTask from "./DeleteTask";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { getTaskById, putAnotationTask } from "../../services/tasksService";
 import { toast } from "react-toastify";
+import { IconCloseSidebarTask } from "../../common/Icons";
 
 export default function SidebarTask() {
   const [tasks, setTasks] = useState([]);
@@ -73,7 +73,7 @@ export default function SidebarTask() {
       ))}
 
       <CloseSideBarAndDeleteTask>
-        <FiLogOut
+        <IconCloseSidebarTask
           fontSize={"25px"}
           cursor={"pointer"}
           onClick={() => setTaskSelected(null)}

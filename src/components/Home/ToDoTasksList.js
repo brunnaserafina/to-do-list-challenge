@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { AiOutlinePlus } from "react-icons/ai";
 import styled from "styled-components";
 import CreateTask from "./CreateTask";
 import DeleteList from "./DeleteList";
 import TaskItem, { Check } from "./TaskItem";
 import ListsContext from "../../contexts/ListsContext";
 import { getTasksUnfinished } from "../../services/tasksService";
+import { IconPlusAddTask } from "../../common/Icons";
 
 export default function ToDoTasksList() {
   const [createdNewTask, setCreatedNewTask] = useState(false);
@@ -56,7 +56,7 @@ export default function ToDoTasksList() {
       ) : (
         <div onClick={() => setCreatedNewTask(true)}>
           <Check>
-            <AiOutlinePlus color={"white"} />
+            <IconPlusAddTask color={"white"} />
           </Check>
           <p>Adicionar tarefa</p>
         </div>

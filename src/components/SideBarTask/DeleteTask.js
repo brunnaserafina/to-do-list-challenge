@@ -1,6 +1,6 @@
 import { useCallback, useContext } from "react";
-import { RiDeleteBinLine } from "react-icons/ri";
 import { toast } from "react-toastify";
+import { IconDelete } from "../../common/Icons";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { deleteTask } from "../../services/tasksService";
@@ -22,7 +22,7 @@ export default function DeleteTask({ taskIdSelected }) {
   }, [taskIdSelected, setTaskSelected, render, setRender]);
 
   return (
-    <RiDeleteBinLine
+    <IconDelete
       fontSize={"23px"}
       color={"var(--dark-green)"}
       cursor={"pointer"}

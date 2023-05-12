@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import styled from "styled-components";
+import { IconArrowDown, IconArrowUp } from "../../common/Icons";
 import Lists from "./Lists";
 
 export default function Sidebar() {
@@ -12,12 +12,12 @@ export default function Sidebar() {
         <h1>Listas</h1>
 
         {openLists ? (
-          <IoIosArrowUp
+          <IconArrowUp
             cursor={"pointer"}
             onClick={() => setOpenLists(!openLists)}
           />
         ) : (
-          <IoIosArrowDown
+          <IconArrowDown
             cursor={"pointer"}
             onClick={() => setOpenLists(!openLists)}
           />

@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import TaskItem from "./TaskItem";
 import ListsContext from "../../contexts/ListsContext";
 import { getTasksFinished } from "../../services/tasksService";
+import { IconArrowDown, IconArrowUp } from "../../common/Icons";
 
 export default function DoneTasksList() {
   const [openFinishedTasks, setOpenFinishedTasks] = useState(false);
@@ -33,12 +33,12 @@ export default function DoneTasksList() {
         <h2>Tarefas concluídas ({doneTasks?.length})</h2>
 
         {openFinishedTasks ? (
-          <IoIosArrowUp
+          <IconArrowUp
             cursor={"pointer"}
             onClick={() => setOpenFinishedTasks(false)}
           />
         ) : (
-          <IoIosArrowDown
+          <IconArrowDown
             cursor={"pointer"}
             onClick={() => setOpenFinishedTasks(true)}
           />

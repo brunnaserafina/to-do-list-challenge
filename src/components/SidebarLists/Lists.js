@@ -1,11 +1,11 @@
 import { useState, useContext } from "react";
-import { BsCheck2, BsPlus } from "react-icons/bs";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { InputCreateNewListOrTask } from "../../common/InputCreateNewListOrTask";
 import { getLists, postList } from "../../services/listsService";
+import { IconCheck, IconPlus } from "../../common/Icons";
 
 export default function Lists() {
   const [openInputCreatedNewList, setOpenInputCreatedNewList] = useState(false);
@@ -66,7 +66,7 @@ export default function Lists() {
             }}
           >
             <span>
-              {selectedItemIndex === index && <BsCheck2 fontSize={"18px"} />}
+              {selectedItemIndex === index && <IconCheck fontSize={"18px"} />}
             </span>
 
             <p>{item.title}</p>
@@ -96,7 +96,7 @@ export default function Lists() {
       ) : (
         <AddNewList onClick={() => setOpenInputCreatedNewList(true)}>
           <span>
-            <BsPlus fontSize={"28px"} />
+            <IconPlus fontSize={"28px"} />
           </span>
           <h2>Criar nova lista</h2>
         </AddNewList>
