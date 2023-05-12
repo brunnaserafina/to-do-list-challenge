@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Search from "./Search";
 import Sidebar from "../SidebarLists/SidebarLists";
 import UserMenuWithLogout from "./Logout";
+import previewProfilePicture from "../../assets/images/preview-profile-picture.png";
 import {
   IconArrowDown,
   IconArrowUp,
@@ -27,15 +28,12 @@ export default function Header() {
       <Search />
 
       <UserMenu onClick={() => setOpenUserMenu(!openUserMenu)}>
-        <img
-          src="https://img.freepik.com/vetores-premium/gato-fofo-dentro-da-caixa-e-mascote-dos-desenhos-animados-de-mao-acenando_357749-765.jpg"
-          alt="Foto perfil"
-        />
+        <img src={previewProfilePicture} alt="Foto perfil" />
 
         {openUserMenu ? (
           <>
             <IconArrowUp fontSize={"25px"} color={"white"} cursor={"pointer"} />
-            <UserMenuWithLogout open={openUserMenu}/>
+            <UserMenuWithLogout open={openUserMenu} />
           </>
         ) : (
           <IconArrowDown fontSize={"25px"} color={"white"} cursor={"pointer"} />
