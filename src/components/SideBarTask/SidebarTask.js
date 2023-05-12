@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import TaskItem from "../Home/TaskItem";
 import DeleteTask from "./DeleteTask";
 import ListsContext from "../../contexts/ListsContext";
@@ -8,7 +8,7 @@ import { getTaskById, putAnotationTask } from "../../services/tasksService";
 import { toast } from "react-toastify";
 import { IconCloseSidebarTask } from "../../common/Icons";
 
-export default function SidebarTask() {
+export default function SidebarTask({ open }) {
   const [tasks, setTasks] = useState([]);
   const [annotations, setAnnotations] = useState([]);
   const { render } = useContext(ListsContext);
@@ -40,7 +40,7 @@ export default function SidebarTask() {
   };
 
   return (
-    <WrapperSideBarTask>
+    <WrapperSideBarTask open={open}>
       {tasks?.map((item, index) => (
         <div key={index}>
           <TaskItem
@@ -85,6 +85,17 @@ export default function SidebarTask() {
   );
 }
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(80%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 const CloseSideBarAndDeleteTask = styled.div`
   color: var(--dark-green);
   margin-bottom: 60px;
@@ -104,6 +115,10 @@ const WrapperSideBarTask = styled.span`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  opacity: ${({ open }) => (open ? 1 : 0)};
+  transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-10px)")};
+  transition: opacity 0.3s ease, transform 0.7s ease;
+  animation: ${({ open }) => (open ? fadeIn : null)} 0.7s ease;
 
   li {
     display: flex;

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { putLogout } from "../../services/authenticationService";
 
-export default function UserMenuWithLogout() {
+export default function UserMenuWithLogout({ open }) {
   const navigate = useNavigate("");
   const name = JSON.parse(localStorage.getItem("to-do-list"))?.name;
   const email = JSON.parse(localStorage.getItem("to-do-list"))?.email;
@@ -21,13 +21,24 @@ export default function UserMenuWithLogout() {
   }
 
   return (
-    <UserMenu>
+    <UserMenu open={open}>
       <h2>{name}</h2>
       <h3>{email}</h3>
       <p onClick={handleLogout}>Sair</p>
     </UserMenu>
   );
 }
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 const UserMenu = styled.div`
   min-width: fit-content;
@@ -41,6 +52,10 @@ const UserMenu = styled.div`
   color: var(--white);
   padding: 8px;
   cursor: initial;
+  opacity: ${({ open }) => (open ? 1 : 0)};
+  transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-10px)")};
+  transition: opacity 0.3s ease, transform 0.7s ease;
+  animation: ${({ open }) => (open ? fadeIn : null)} 0.7s ease;
 
   h2 {
     font-weight: 700;

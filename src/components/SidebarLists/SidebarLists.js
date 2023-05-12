@@ -1,13 +1,13 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { IconArrowDown, IconArrowUp } from "../../common/Icons";
 import Lists from "./Lists";
 
-export default function Sidebar() {
+export default function Sidebar({ open }) {
   const [openLists, setOpenLists] = useState(true);
 
   return (
-    <WrapperSideBar>
+    <WrapperSideBar open={open}>
       <span>
         <h1>Listas</h1>
 
@@ -29,6 +29,17 @@ export default function Sidebar() {
   );
 }
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 const WrapperSideBar = styled.div`
   width: 20vw;
   position: fixed;
@@ -38,6 +49,10 @@ const WrapperSideBar = styled.div`
   background-color: var(--gray);
   padding: 6vh 1vw;
   color: var(--dark-green);
+  opacity: ${({ open }) => (open ? 1 : 0)};
+  transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-10px)")};
+  transition: opacity 0.3s ease, transform 0.7s ease;
+  animation: ${({ open }) => (open ? fadeIn : null)} 1s ease;
 
   span {
     width: 100%;

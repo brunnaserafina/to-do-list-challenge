@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
-import { BsSearch } from "react-icons/bs";
 import styled from "styled-components";
+import { IconSearch } from "../../common/Icons";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { getTasksBySearch } from "../../services/tasksService";
@@ -24,7 +24,7 @@ export default function Search() {
   return (
     <WrapperSearch>
       <SearchInput>
-        <BsSearch fontSize={"20px"} color={"var(--light-green)"} />
+        <IconSearch fontSize={"20px"} color={"var(--light-green)"} />
 
         <DebounceInput
           minLength={1}

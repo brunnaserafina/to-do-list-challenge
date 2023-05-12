@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { CgMenu } from "react-icons/cg";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import styled from "styled-components";
-
 import Search from "./Search";
 import Sidebar from "../SidebarLists/SidebarLists";
 import UserMenuWithLogout from "./Logout";
+import {
+  IconArrowDown,
+  IconArrowUp,
+  IconMenuHamburger,
+} from "../../common/Icons";
 
 export default function Header() {
   const [openUserMenu, setOpenUserMenu] = useState(false);
@@ -13,14 +15,14 @@ export default function Header() {
 
   return (
     <WrapperHeader>
-      <CgMenu
+      <IconMenuHamburger
         fontSize={"28px"}
         color={"white"}
         cursor={"pointer"}
         onClick={() => setOpenSidebarLists(!openSidebarLists)}
       />
 
-      {openSidebarLists && <Sidebar />}
+      {openSidebarLists && <Sidebar open={openSidebarLists} />}
 
       <Search />
 
@@ -32,19 +34,11 @@ export default function Header() {
 
         {openUserMenu ? (
           <>
-            <IoIosArrowUp
-              fontSize={"25px"}
-              color={"white"}
-              cursor={"pointer"}
-            />
-            <UserMenuWithLogout />
+            <IconArrowUp fontSize={"25px"} color={"white"} cursor={"pointer"} />
+            <UserMenuWithLogout open={openUserMenu}/>
           </>
         ) : (
-          <IoIosArrowDown
-            fontSize={"25px"}
-            color={"white"}
-            cursor={"pointer"}
-          />
+          <IconArrowDown fontSize={"25px"} color={"white"} cursor={"pointer"} />
         )}
       </UserMenu>
     </WrapperHeader>
