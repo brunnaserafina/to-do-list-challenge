@@ -84,6 +84,7 @@ export const MessageConfirm = styled.p`
 
 export const Button = styled.button`
   border-radius: 5px;
+  width: 80px;
   height: 30px;
   border: none;
   margin: 0 5px;
