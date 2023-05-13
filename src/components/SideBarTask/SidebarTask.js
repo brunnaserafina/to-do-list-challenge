@@ -87,6 +87,11 @@ export default function SidebarTask({ open }) {
             onChange={(date) => {
               setStartDate(date);
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Backspace") {
+                setStartDate(null);
+              }
+            }}
             aria-label="Data de vencimento"
           />
 
@@ -133,6 +138,10 @@ const InputCalendar = styled(DatePicker)`
   font-size: 14px;
   width: 100%;
   margin: 10px 0;
+
+  &&::placeholder {
+    color: var(--red);
+  }
 `;
 
 const CloseSideBarAndDeleteTask = styled.div`
