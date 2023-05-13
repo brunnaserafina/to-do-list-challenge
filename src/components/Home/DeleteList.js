@@ -37,7 +37,7 @@ export default function DeleteList() {
         setIdListSelected(updatedLists?.data[0].id);
         setSelectedItemIndex(0);
       }
-
+      setModalIsOpen(false);
       setRender((prev) => !prev);
     } catch (error) {
       toast("Não foi possível remover a lista, tente novamente!");
@@ -114,7 +114,7 @@ export const customStyles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     textAlign: "center",
     borderColor: "var(--light-green)",
   },

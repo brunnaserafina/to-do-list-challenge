@@ -10,18 +10,18 @@ export function TasksProvider({ children }) {
   const [taskSelected, setTaskSelected] = useState(null);
   const [taskIdSelected, setTaskIdSelected] = useState(null);
   const [nameTaskSelected, setNameTaskSelected] = useState("");
-  const [anotation, setAnotation] = useState("");
+  const [annotation, setAnnotation] = useState("");
   const { render } = useContext(ListsContext);
 
   useEffect(() => {
     async function getTask() {
       if (taskIdSelected !== null) {
         const taskResponse = await getTaskById(taskIdSelected);
-        setAnotation(taskResponse.data[0]?.anotation);
+        setAnnotation(taskResponse.data[0]?.annotation);
       }
     }
     getTask();
-  }, [taskIdSelected, taskSelected, anotation, render]);
+  }, [taskIdSelected, taskSelected, annotation, render]);
 
   return (
     <TasksContext.Provider
@@ -32,8 +32,8 @@ export function TasksProvider({ children }) {
         setNameTaskSelected,
         taskIdSelected,
         setTaskIdSelected,
-        anotation,
-        setAnotation,
+        annotation,
+        setAnnotation,
       }}
     >
       {children}

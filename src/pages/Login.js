@@ -22,7 +22,6 @@ export default function Login() {
 
     try {
       const response = await postLogin(form);
-      toast("Login efetuado com sucesso! Seja bem-vindo(a)");
       localStorage.setItem(
         "to-do-list",
         JSON.stringify({

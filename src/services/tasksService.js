@@ -78,12 +78,13 @@ function getTaskById(taskId) {
   return promise;
 }
 
-function putAnotationTask(taskId, anotation) {
+function putAnnotationTask(taskId, annotation, date) {
+  console.log("dataaa", date);
   const config = createHeaders();
 
   const promise = axios.put(
     `${BASE_URL}/tasks/anotation/${taskId}`,
-    { anotation },
+    { annotation, date },
     config
   );
 
@@ -106,6 +107,6 @@ export {
   editTaskUnfinished,
   getTasksBySearch,
   getTaskById,
-  putAnotationTask,
+  putAnnotationTask,
   deleteTask,
 };

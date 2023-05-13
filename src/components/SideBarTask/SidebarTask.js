@@ -1,18 +1,21 @@
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+import { format } from "date-fns";
 import styled, { keyframes } from "styled-components";
 import TaskItem from "../Home/TaskItem";
 import DeleteTask from "./DeleteTask";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
-import { getTaskById, putAnotationTask } from "../../services/tasksService";
-import { toast } from "react-toastify";
+import { getTaskById, putAnnotationTask } from "../../services/tasksService";
 import { IconCloseSidebarTask } from "../../common/Icons";
 
 export default function SidebarTask({ open }) {
+  const [startDate, setStartDate] = useState();
   const [tasks, setTasks] = useState([]);
   const [annotations, setAnnotations] = useState([]);
   const { render } = useContext(ListsContext);
-  const { taskIdSelected, anotation, setTaskSelected } =
+  const { taskIdSelected, annotation, setTaskSelected } =
     useContext(TasksContext);
 
   useEffect(() => {
@@ -20,17 +23,27 @@ export default function SidebarTask({ open }) {
       try {
         const task = await getTaskById(taskIdSelected);
         setTasks(task.data);
-        setAnnotations([anotation]);
+        setAnnotations([annotation]);
+        setStartDate(
+          task.data[0]?.date !== null
+            ? new Date(task.data[0]?.date.slice(0, -1))
+            : ""
+        );
       } catch (error) {
+        console.log(error);
         toast.error("Não foi possível carregar a tarefa");
       }
     }
     fetchTask();
-  }, [taskIdSelected, anotation, render]);
+  }, [taskIdSelected, annotation, render]);
 
   const handleSave = async (taskId, index) => {
     try {
-      await putAnotationTask(taskId, annotations[index]);
+      await putAnnotationTask(
+        taskId,
+        annotations[index],
+        startDate ? startDate.toISOString() : null
+      );
       const newAnnotations = [...annotations];
       newAnnotations[index] = annotations[index];
       setAnnotations(newAnnotations);
@@ -63,6 +76,20 @@ export default function SidebarTask({ open }) {
             isCompleted={item.is_completed}
           ></TextArea>
 
+          <InputCalendar
+            value={
+              startDate
+                ? `Data de vencimento: ${format(startDate, "dd/MM/yyyy")}`
+                : `Escolha uma data de vencimento`
+            }
+            selected={startDate}
+            dateFormat="dd/MM/yyyy"
+            onChange={(date) => {
+              setStartDate(date);
+            }}
+            aria-label="Data de vencimento"
+          />
+
           <Button
             isCompleted={item.is_completed}
             onClick={() => handleSave(item.id, index)}
@@ -94,6 +121,18 @@ const fadeIn = keyframes`
     opacity: 1;
     transform: translateY(0);
   }
+`;
+
+const InputCalendar = styled(DatePicker)`
+  border: none;
+  height: 30px;
+  text-align: center;
+  color: var(--red);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  margin: 10px 0;
 `;
 
 const CloseSideBarAndDeleteTask = styled.div`
