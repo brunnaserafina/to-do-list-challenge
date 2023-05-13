@@ -1,9 +1,14 @@
-import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlinePlus,
+  AiOutlineCheckSquare,
+} from "react-icons/ai";
 import { BsCheck2, BsPlus, BsCheckLg, BsSearch } from "react-icons/bs";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FiLogOut } from "react-icons/fi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { CgMenu } from "react-icons/cg";
+import { FiEdit } from "react-icons/fi";
 
 export const IconArrowDown = IoIosArrowDown;
 export const IconArrowUp = IoIosArrowUp;
@@ -16,3 +21,5 @@ export const IconCloseSidebarTask = FiLogOut;
 export const IconPlus = BsPlus;
 export const IconMenuHamburger = CgMenu;
 export const IconSearch = BsSearch;
+export const IconEdit = FiEdit;
+export const IconEditFinish = AiOutlineCheckSquare;

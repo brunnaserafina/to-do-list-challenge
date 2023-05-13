@@ -25,4 +25,13 @@ function deleteList(params) {
   return promise;
 }
 
-export { postList, getLists, deleteList };
+function editTitleList(params) {
+  const { listId, title } = params;
+  
+  const config = createHeaders();
+
+  const promise = axios.put(`${BASE_URL}/lists/${listId}`, { title }, config);
+  return promise;
+}
+
+export { postList, getLists, deleteList, editTitleList };

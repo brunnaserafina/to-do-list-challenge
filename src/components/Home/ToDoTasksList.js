@@ -6,14 +6,31 @@ import DeleteList from "./DeleteList";
 import TaskItem, { Check } from "./TaskItem";
 import ListsContext from "../../contexts/ListsContext";
 import { getTasksUnfinished } from "../../services/tasksService";
-import { IconPlusAddTask } from "../../common/Icons";
+import { IconEdit, IconEditFinish, IconPlusAddTask } from "../../common/Icons";
+import { editTitleList } from "../../services/listsService";
 
 export default function ToDoTasksList() {
   const [createdNewTask, setCreatedNewTask] = useState(false);
   const [toDoTasks, setToDoTasks] = useState([]);
-  const { allLists, idListSelected, titleListSelected } =
+  const [renameList, setRenameList] = useState(false);
+
+  const { allLists, idListSelected, titleListSelected, setRender } =
     useContext(ListsContext);
   const hasLists = allLists.length > 0;
+
+  async function handleRenameList() {
+    if (inputValue.length === 0) return;
+    try {
+      await editTitleList({
+        listId: idListSelected ? idListSelected : allLists[0].id,
+        title: inputValue,
+      });
+      setRenameList(false);
+      setRender((prev) => !prev);
+    } catch (error) {
+      toast.error("Não foi possível editar o título da lista");
+    }
+  }
 
   useEffect(() => {
     async function getAllTasks() {
@@ -30,14 +47,54 @@ export default function ToDoTasksList() {
     getAllTasks();
   }, [allLists, idListSelected]);
 
+  function handleKeyDown(event) {
+    if (event.keyCode === 13) {
+      handleRenameList();
+    }
+  }
+
+  const [inputValue, setInputValue] = useState(
+    !idListSelected && hasLists ? allLists[0].title : titleListSelected
+  );
+
   return (
     <WrapperToDoTasks>
       <span>
-        <h1>
-          {!idListSelected && hasLists ? allLists[0].title : titleListSelected}
-        </h1>
+        {!renameList ? (
+          <h1 onClick={() => setRenameList(true)}>
+            {!idListSelected && hasLists
+              ? allLists[0].title
+              : titleListSelected}
+          </h1>
+        ) : (
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+            onKeyDown={handleKeyDown}
+            autoFocus
+          />
+        )}
 
-        <DeleteList />
+        <div>
+          {renameList ? (
+            <IconEditFinish
+              fontSize={"22px"}
+              color={"var(--dark-green)"}
+              cursor={"pointer"}
+              onClick={handleRenameList}
+            />
+          ) : (
+            <IconEdit
+              fontSize={"20px"}
+              color={"var(--dark-green)"}
+              cursor={"pointer"}
+              onClick={() => setRenameList(true)}
+            />
+          )}
+
+          <DeleteList />
+        </div>
       </span>
 
       <ul>
@@ -76,11 +133,26 @@ const WrapperToDoTasks = styled.div`
     font-size: 18px;
   }
 
-  span {
+  > span {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-top: 5vh;
     margin-bottom: 2vh;
+  }
+
+  > span > input {
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  > span > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 15%;
+    padding: 0 5px;
   }
 
   li {
