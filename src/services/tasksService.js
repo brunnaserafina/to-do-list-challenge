@@ -79,7 +79,6 @@ function getTaskById(taskId) {
 }
 
 function putAnnotationTask(taskId, annotation, date) {
-  console.log("dataaa", date);
   const config = createHeaders();
 
   const promise = axios.put(
@@ -99,6 +98,16 @@ function deleteTask(taskId) {
   return promise;
 }
 
+function editTaskName(params) {
+  const { taskId, name } = params;
+
+  const config = createHeaders();
+
+  const promise = axios.put(`${BASE_URL}/tasks/${taskId}`, { name }, config);
+
+  return promise;
+}
+
 export {
   postTask,
   getTasksUnfinished,
@@ -109,4 +118,5 @@ export {
   getTaskById,
   putAnnotationTask,
   deleteTask,
+  editTaskName,
 };

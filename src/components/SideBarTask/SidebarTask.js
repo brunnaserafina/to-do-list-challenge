@@ -64,6 +64,7 @@ export default function SidebarTask({ open }) {
             id={item.id}
             name={item.name}
             isCompleted={item.is_completed}
+            isSidebarTask
           />
 
           <TextArea

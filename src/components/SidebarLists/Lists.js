@@ -10,7 +10,8 @@ import { IconCheck, IconPlus } from "../../common/Icons";
 export default function Lists() {
   const [openInputCreatedNewList, setOpenInputCreatedNewList] = useState(false);
   const [titleInputList, setTitleInputList] = useState("");
-  const { setTaskSelected } = useContext(TasksContext);
+  const { setTaskSelected, setTitleNewTask } = useContext(TasksContext);
+  useContext(TasksContext);
   const {
     allLists,
     setAllLists,
@@ -18,6 +19,7 @@ export default function Lists() {
     setSelectedItemIndex,
     setIdListSelected,
     setTitleListSelected,
+    titleListSelected,
   } = useContext(ListsContext);
 
   const addNewList = useCallback(async () => {
@@ -49,13 +51,20 @@ export default function Lists() {
     }
 
     getAllLists();
-  }, [setAllLists, setIdListSelected, setTitleListSelected, addNewList]);
+  }, [
+    setAllLists,
+    setIdListSelected,
+    titleListSelected,
+    setTitleListSelected,
+    addNewList,
+  ]);
 
   const handleItemClick = (item, index) => {
     setSelectedItemIndex(index);
     setIdListSelected(item.id);
     setTitleListSelected(item.title);
     setTaskSelected(null);
+    setTitleNewTask("");
   };
 
   function handleKeyDown(event) {

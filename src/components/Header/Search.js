@@ -70,7 +70,8 @@ function ListTaskSearch({
   const listsContext = useContext(ListsContext);
   const tasksContext = useContext(TasksContext);
 
-  const openTask = async () => {
+  const openTask = () => {
+    console.log("ss");
     tasksContext.setNameTaskSelected(name);
     tasksContext.setTaskSelected(0);
     tasksContext.setTaskIdSelected(id);

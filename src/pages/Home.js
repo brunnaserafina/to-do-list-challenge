@@ -35,7 +35,7 @@ export default function Home() {
         <MessageNoLists>Você ainda não possui nenhuma lista :(</MessageNoLists>
       )}
 
-      {taskSelected && <SidebarTask open={taskSelected !== null} />}
+      {taskSelected !== null && <SidebarTask open={taskSelected !== null} />}
     </>
   );
 }

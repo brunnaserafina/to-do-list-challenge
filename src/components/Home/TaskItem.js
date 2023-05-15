@@ -1,14 +1,40 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { IconCheckTask, IconCloseTask, IconEdit } from "../../common/Icons";
+import {
+  IconCheckEdit,
+  IconCheckTask,
+  IconCloseTask,
+  IconEdit,
+} from "../../common/Icons";
 import TasksContext from "../../contexts/TasksContext";
-import { editTaskFinished } from "../../services/tasksService";
+import { editTaskFinished, editTaskName } from "../../services/tasksService";
 import { editTaskUnfinished } from "../../services/tasksService";
 
 export default function TaskItem(props) {
   const [openInputTask, setOpenInputTask] = useState(false);
+  const [newTaskName, setNewTaskName] = useState("");
   const tasksContext = useContext(TasksContext);
+
+  const handleEditTaskName = useCallback(async () => {
+    if (newTaskName === "") {
+      setOpenInputTask(false);
+      return;
+    }
+    
+    try {
+      await editTaskName({
+        taskId: tasksContext.taskIdSelected,
+        name: newTaskName,
+      });
+      tasksContext.setUpdatedTasks((prev) => !prev);
+    } catch (error) {
+      toast.error(
+        "Não foi possível modificar o nome da tarefa, tente novamente."
+      );
+    }
+    setOpenInputTask(false);
+  }, [newTaskName, tasksContext]);
 
   const handleUnfinishTask = async () => {
     try {
@@ -29,14 +55,23 @@ export default function TaskItem(props) {
   };
 
   const handleOpenTask = () => {
+    if (props.isSidebarTask) {
+      setOpenInputTask(true);
+      return;
+    }
+
     tasksContext.setNameTaskSelected(props.name);
     tasksContext.setTaskSelected(true);
     tasksContext.setTaskIdSelected(props.id);
     setOpenInputTask(false);
   };
 
+  function handleKeyDown(event) {
+    if (event.keyCode === 13) handleEditTaskName();
+  }
+
   return (
-    <WrapperTaskItem>
+    <WrapperTaskItem isCompleted={props.isCompleted}>
       <li>
         {props.isCompleted ? (
           <Check color={"gray"} onClick={handleUnfinishTask}>
@@ -52,19 +87,36 @@ export default function TaskItem(props) {
           </Check>
         )}
 
-        {!openInputTask && (
+        {openInputTask ? (
+          <input
+            type="text"
+            defaultValue={props.name}
+            onChange={(e) => setNewTaskName(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoFocus
+          />
+        ) : (
           <TitleTask onClick={handleOpenTask} isCompleted={props.isCompleted}>
             {props.name}
           </TitleTask>
         )}
       </li>
 
-      {props.isSidebarTask && (
+      {props.isSidebarTask && !openInputTask && (
         <IconEdit
-          color={"var(--dark-green)"}
+          color={props.isCompleted ? "gray" : "var(--dark-green)"}
           cursor={"pointer"}
           fontSize={"17px"}
           onClick={() => setOpenInputTask(true)}
+        />
+      )}
+
+      {props.isSidebarTask && openInputTask && (
+        <IconCheckEdit
+          color={props.isCompleted ? "gray" : "var(--dark-green)"}
+          cursor={"pointer"}
+          fontSize={"20px"}
+          onClick={handleEditTaskName}
         />
       )}
     </WrapperTaskItem>
@@ -80,6 +132,8 @@ const WrapperTaskItem = styled.div`
     background-color: transparent;
     border: none;
     color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
+    text-decoration: ${(props) =>
+      props.isCompleted ? "line-through" : "none"};
     font-size: 16px;
     font-weight: 700;
   }

@@ -10,6 +10,7 @@ export function TasksProvider({ children }) {
   const [nameTaskSelected, setNameTaskSelected] = useState("");
   const [annotation, setAnnotation] = useState("");
   const [updatedTasks, setUpdatedTasks] = useState(false);
+  const [titleNewTask, setTitleNewTask] = useState("");
 
   return (
     <TasksContext.Provider
@@ -24,6 +25,8 @@ export function TasksProvider({ children }) {
         setAnnotation,
         updatedTasks,
         setUpdatedTasks,
+        titleNewTask,
+        setTitleNewTask,
       }}
     >
       {children}
