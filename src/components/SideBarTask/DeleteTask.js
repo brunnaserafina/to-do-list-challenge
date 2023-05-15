@@ -2,29 +2,27 @@ import { useCallback, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
 import { IconDelete } from "../../common/Icons";
-import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { deleteTask } from "../../services/tasksService";
 import { Button, customStyles, MessageConfirm } from "../Home/DeleteList";
 
 export default function DeleteTask({ taskIdSelected }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const { setTaskSelected } = useContext(TasksContext);
-  const { render, setRender } = useContext(ListsContext);
-
-  function closeModal() {
-    setModalIsOpen(false);
-  }
+  const { setTaskSelected, setUpdatedTasks } = useContext(TasksContext);
 
   const deleteTaskConfirm = useCallback(async () => {
     try {
       await deleteTask(taskIdSelected);
       setTaskSelected(null);
-      setRender(!render);
+      setUpdatedTasks((prev) => !prev);
     } catch (error) {
       toast("Não foi possível deletar a tarefa, tente novamente!");
     }
-  }, [taskIdSelected, setTaskSelected, render, setRender]);
+  }, [taskIdSelected, setTaskSelected, setUpdatedTasks]);
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
 
   return (
     <>

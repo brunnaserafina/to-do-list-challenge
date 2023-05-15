@@ -5,10 +5,12 @@ import TaskItem from "./TaskItem";
 import ListsContext from "../../contexts/ListsContext";
 import { getTasksFinished } from "../../services/tasksService";
 import { IconArrowDown, IconArrowUp } from "../../common/Icons";
+import TasksContext from "../../contexts/TasksContext";
 
 export default function DoneTasksList() {
   const [openFinishedTasks, setOpenFinishedTasks] = useState(false);
   const [doneTasks, setDoneTasks] = useState([]);
+  const { updatedTasks } = useContext(TasksContext);
   const { allLists, idListSelected } = useContext(ListsContext);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function DoneTasksList() {
     }
 
     getAllTasks();
-  }, [allLists, idListSelected]);
+  }, [allLists, idListSelected, updatedTasks]);
 
   return (
     <DoneTasksContainer>

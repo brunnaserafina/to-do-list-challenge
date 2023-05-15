@@ -22,4 +22,4 @@ export const IconPlus = BsPlus;
 export const IconMenuHamburger = CgMenu;
 export const IconSearch = BsSearch;
 export const IconEdit = FiEdit;
-export const IconEditFinish = AiOutlineCheckSquare;
+export const IconCheckEdit = AiOutlineCheckSquare;

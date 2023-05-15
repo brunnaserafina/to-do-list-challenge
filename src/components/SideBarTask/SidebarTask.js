@@ -5,24 +5,28 @@ import { format } from "date-fns";
 import styled, { keyframes } from "styled-components";
 import TaskItem from "../Home/TaskItem";
 import DeleteTask from "./DeleteTask";
-import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { getTaskById, putAnnotationTask } from "../../services/tasksService";
 import { IconCloseSidebarTask } from "../../common/Icons";
 
 export default function SidebarTask({ open }) {
-  const [startDate, setStartDate] = useState();
   const [tasks, setTasks] = useState([]);
+  const [startDate, setStartDate] = useState(null);
   const [annotations, setAnnotations] = useState([]);
-  const { render } = useContext(ListsContext);
-  const { taskIdSelected, annotation, setTaskSelected } =
-    useContext(TasksContext);
+  const {
+    taskIdSelected,
+    annotation,
+    setAnnotation,
+    setTaskSelected,
+    updatedTasks,
+  } = useContext(TasksContext);
 
   useEffect(() => {
     async function fetchTask() {
       try {
         const task = await getTaskById(taskIdSelected);
         setTasks(task.data);
+        setAnnotation(task.data[0].annotation);
         setAnnotations([annotation]);
         setStartDate(
           task.data[0]?.date !== null
@@ -35,7 +39,7 @@ export default function SidebarTask({ open }) {
       }
     }
     fetchTask();
-  }, [taskIdSelected, annotation, render]);
+  }, [taskIdSelected, annotation, updatedTasks, setAnnotation]);
 
   const handleSave = async (taskId, index) => {
     try {

@@ -1,36 +1,35 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import CreateTask from "./CreateTask";
 import DeleteList from "./DeleteList";
 import TaskItem, { Check } from "./TaskItem";
 import ListsContext from "../../contexts/ListsContext";
-import { getTasksUnfinished } from "../../services/tasksService";
-import { IconEdit, IconEditFinish, IconPlusAddTask } from "../../common/Icons";
-import { editTitleList } from "../../services/listsService";
+import { getTasksUnfinished, postTask } from "../../services/tasksService";
+import { IconPlusAddTask } from "../../common/Icons";
+import { InputCreateNewItem } from "../../common/InputCreateNewListOrTask";
+import TasksContext from "../../contexts/TasksContext";
 
 export default function ToDoTasksList() {
   const [createdNewTask, setCreatedNewTask] = useState(false);
   const [toDoTasks, setToDoTasks] = useState([]);
-  const [renameList, setRenameList] = useState(false);
-
-  const { allLists, idListSelected, titleListSelected, setRender } =
+  const [titleTask, setTitleTask] = useState("");
+  const { updatedTasks } = useContext(TasksContext);
+  const { allLists, idListSelected, titleListSelected } =
     useContext(ListsContext);
-  const hasLists = allLists.length > 0;
 
-  async function handleRenameList() {
-    if (inputValue.length === 0) return;
+  const addNewTask = useCallback(async () => {
+    if (titleTask === "") return;
+
     try {
-      await editTitleList({
+      await postTask({
+        name: titleTask,
         listId: idListSelected ? idListSelected : allLists[0].id,
-        title: inputValue,
       });
-      setRenameList(false);
-      setRender((prev) => !prev);
+      setTitleTask("");
     } catch (error) {
-      toast.error("Não foi possível editar o título da lista");
+      toast.error("Não foi possível adicionar a tarefa, tente novamente!");
     }
-  }
+  }, [allLists, idListSelected, titleTask]);
 
   useEffect(() => {
     async function getAllTasks() {
@@ -45,56 +44,22 @@ export default function ToDoTasksList() {
       }
     }
     getAllTasks();
-  }, [allLists, idListSelected]);
+  }, [allLists, idListSelected, addNewTask, updatedTasks, updatedTasks]);
 
   function handleKeyDown(event) {
-    if (event.keyCode === 13) {
-      handleRenameList();
-    }
+    if (event.keyCode === 13) addNewTask();
   }
-
-  const [inputValue, setInputValue] = useState(
-    !idListSelected && hasLists ? allLists[0].title : titleListSelected
-  );
 
   return (
     <WrapperToDoTasks>
       <span>
-        {!renameList ? (
-          <h1 onClick={() => setRenameList(true)}>
-            {!idListSelected && hasLists
-              ? allLists[0].title
-              : titleListSelected}
-          </h1>
-        ) : (
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(event) => setInputValue(event.target.value)}
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
-        )}
+        <h1>
+          {!idListSelected && allLists.length > 0
+            ? allLists[0].title
+            : titleListSelected}
+        </h1>
 
-        <div>
-          {renameList ? (
-            <IconEditFinish
-              fontSize={"22px"}
-              color={"var(--dark-green)"}
-              cursor={"pointer"}
-              onClick={handleRenameList}
-            />
-          ) : (
-            <IconEdit
-              fontSize={"20px"}
-              color={"var(--dark-green)"}
-              cursor={"pointer"}
-              onClick={() => setRenameList(true)}
-            />
-          )}
-
-          <DeleteList />
-        </div>
+        <DeleteList />
       </span>
 
       <ul>
@@ -109,7 +74,21 @@ export default function ToDoTasksList() {
       </ul>
 
       {createdNewTask ? (
-        <CreateTask setCreatedNewTask={setCreatedNewTask} />
+        <InputCreateNewItem>
+          <input
+            type="text"
+            placeholder="Digite o título da sua nova tarefa"
+            value={titleTask}
+            onChange={(e) => setTitleTask(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoFocus
+          />
+
+          <div>
+            <button onClick={() => setCreatedNewTask(false)}>Cancelar</button>
+            <button onClick={addNewTask}>Salvar</button>
+          </div>
+        </InputCreateNewItem>
       ) : (
         <div onClick={() => setCreatedNewTask(true)}>
           <Check>

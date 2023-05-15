@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
 import Search from "./Search";
-import Sidebar from "../SidebarLists/SidebarLists";
 import UserMenuWithLogout from "./Logout";
 import previewProfilePicture from "../../assets/images/preview-profile-picture.png";
 import {
@@ -10,9 +9,8 @@ import {
   IconMenuHamburger,
 } from "../../common/Icons";
 
-export default function Header() {
+export default function Header({ setOpenSidebarLists, openSidebarLists }) {
   const [openUserMenu, setOpenUserMenu] = useState(false);
-  const [openSidebarLists, setOpenSidebarLists] = useState(true);
 
   return (
     <WrapperHeader>
@@ -22,8 +20,6 @@ export default function Header() {
         cursor={"pointer"}
         onClick={() => setOpenSidebarLists(!openSidebarLists)}
       />
-
-      {openSidebarLists && <Sidebar open={openSidebarLists} />}
 
       <Search />
 

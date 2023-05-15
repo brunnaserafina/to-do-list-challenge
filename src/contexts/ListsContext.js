@@ -1,5 +1,4 @@
-import { createContext, useState, useEffect } from "react";
-import { getLists } from "../services/listsService";
+import { createContext, useState } from "react";
 
 const ListsContext = createContext();
 
@@ -10,23 +9,6 @@ export function ListsProvider({ children }) {
   const [idListSelected, setIdListSelected] = useState(null);
   const [titleListSelected, setTitleListSelected] = useState("");
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-  const [render, setRender] = useState(false);
-
-  useEffect(() => {
-    async function getAllLists() {
-      const lists = await getLists();
-
-      if (lists.data.length === 0) {
-        setTitleListSelected("");
-        setIdListSelected(null);
-        setAllLists([]);
-      } else {
-        setAllLists(lists?.data);
-      }
-    }
-
-    getAllLists();
-  }, [render, setRender]);
 
   return (
     <ListsContext.Provider
@@ -39,8 +21,6 @@ export function ListsProvider({ children }) {
         setIdListSelected,
         titleListSelected,
         setTitleListSelected,
-        render,
-        setRender,
       }}
     >
       {children}

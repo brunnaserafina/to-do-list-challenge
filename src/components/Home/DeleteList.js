@@ -9,39 +9,37 @@ import styled from "styled-components";
 
 export default function DeleteList() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const { setTaskSelected } = useContext(TasksContext);
-  const {
-    allLists,
-    idListSelected,
-    setRender,
-    setTitleListSelected,
-    setSelectedItemIndex,
-    setIdListSelected,
-  } = useContext(ListsContext);
-
-  function closeModal() {
-    setModalIsOpen(false);
-  }
+  const tasksContext = useContext(TasksContext);
+  const listsContext = useContext(ListsContext);
 
   async function deleteListConfirm() {
     try {
       await deleteList({
-        listId: idListSelected ? idListSelected : allLists[0].id,
+        listId: listsContext.idListSelected
+          ? listsContext.idListSelected
+          : listsContext.allLists[0].id,
       });
-      setTaskSelected(null);
+
+      tasksContext.setTaskSelected(null);
 
       const updatedLists = await getLists();
 
       if (updatedLists.data.length > 0) {
-        setTitleListSelected(updatedLists?.data[0].title);
-        setIdListSelected(updatedLists?.data[0].id);
-        setSelectedItemIndex(0);
+        listsContext.setTitleListSelected(updatedLists?.data[0].title);
+        listsContext.setIdListSelected(updatedLists?.data[0].id);
+        listsContext.setSelectedItemIndex(0);
+      } else {
+        listsContext.setTitleListSelected("");
       }
+      listsContext.setAllLists(updatedLists.data);
       setModalIsOpen(false);
-      setRender((prev) => !prev);
     } catch (error) {
       toast("Não foi possível remover a lista, tente novamente!");
     }
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
   }
 
   return (

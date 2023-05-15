@@ -1,6 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { getTaskById } from "../services/tasksService";
-import ListsContext from "./ListsContext";
+import { createContext, useState } from "react";
 
 const TasksContext = createContext();
 
@@ -11,17 +9,7 @@ export function TasksProvider({ children }) {
   const [taskIdSelected, setTaskIdSelected] = useState(null);
   const [nameTaskSelected, setNameTaskSelected] = useState("");
   const [annotation, setAnnotation] = useState("");
-  const { render } = useContext(ListsContext);
-
-  useEffect(() => {
-    async function getTask() {
-      if (taskIdSelected !== null) {
-        const taskResponse = await getTaskById(taskIdSelected);
-        setAnnotation(taskResponse.data[0]?.annotation);
-      }
-    }
-    getTask();
-  }, [taskIdSelected, taskSelected, annotation, render]);
+  const [updatedTasks, setUpdatedTasks] = useState(false);
 
   return (
     <TasksContext.Provider
@@ -34,6 +22,8 @@ export function TasksProvider({ children }) {
         setTaskIdSelected,
         annotation,
         setAnnotation,
+        updatedTasks,
+        setUpdatedTasks,
       }}
     >
       {children}

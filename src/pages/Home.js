@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 
 import ListsContext from "../contexts/ListsContext";
@@ -8,8 +8,10 @@ import Header from "../components/Header/Header";
 import DoneTasksList from "../components/Home/DoneTasksList";
 import ToDoTasksList from "../components/Home/ToDoTasksList";
 import SidebarTask from "../components/SideBarTask/SidebarTask";
+import SidebarLists from "../components/SidebarLists/SidebarLists";
 
 export default function Home() {
+  const [openSidebarLists, setOpenSidebarLists] = useState(true);
   const { allLists } = useContext(ListsContext);
   const { taskSelected } = useContext(TasksContext);
 
@@ -17,18 +19,23 @@ export default function Home() {
 
   return (
     <>
-      <Header />
+      <Header
+        setOpenSidebarLists={setOpenSidebarLists}
+        openSidebarLists={openSidebarLists}
+      />
+
+      {openSidebarLists && <SidebarLists open={openSidebarLists} />}
 
       {hasLists ? (
-        <WrapperHome>
+        <WrapperLists>
           <ToDoTasksList />
           <DoneTasksList />
-        </WrapperHome>
+        </WrapperLists>
       ) : (
         <MessageNoLists>Você ainda não possui nenhuma lista :(</MessageNoLists>
       )}
 
-      {taskSelected !== null && <SidebarTask open={taskSelected !== null}/>}
+      {taskSelected && <SidebarTask open={taskSelected !== null} />}
     </>
   );
 }
@@ -40,7 +47,7 @@ const MessageNoLists = styled.p`
   margin-right: 2vw;
 `;
 
-const WrapperHome = styled.div`
+const WrapperLists = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

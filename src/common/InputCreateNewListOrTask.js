@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const InputCreateNewListOrTask = styled.div`
+export const InputCreateNewItem = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;

@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import { IconArrowDown, IconArrowUp } from "../../common/Icons";
 import Lists from "./Lists";
 
-export default function Sidebar({ open }) {
+export default function SidebarLists({ open }) {
   const [openLists, setOpenLists] = useState(true);
 
   return (

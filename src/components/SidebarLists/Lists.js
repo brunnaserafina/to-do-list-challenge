@@ -1,9 +1,9 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
-import { InputCreateNewListOrTask } from "../../common/InputCreateNewListOrTask";
+import { InputCreateNewItem } from "../../common/InputCreateNewListOrTask";
 import { getLists, postList } from "../../services/listsService";
 import { IconCheck, IconPlus } from "../../common/Icons";
 
@@ -13,58 +13,60 @@ export default function Lists() {
   const { setTaskSelected } = useContext(TasksContext);
   const {
     allLists,
+    setAllLists,
     selectedItemIndex,
     setSelectedItemIndex,
     setIdListSelected,
     setTitleListSelected,
-    setRender,
   } = useContext(ListsContext);
 
-  const handleItemClick = (index) => {
-    setSelectedItemIndex(index);
-  };
-
-  const addNewList = async () => {
+  const addNewList = useCallback(async () => {
     if (titleInputList === "") return;
 
     try {
       await postList({ title: titleInputList });
-
-      const lists = await getLists();
-
-      if (lists.data.length === 1) {
-        setTitleListSelected(lists.data[0]?.title);
-        setIdListSelected(lists.data[0]?.id);
-        setSelectedItemIndex(0);
-      }
-
       setTitleInputList("");
       setOpenInputCreatedNewList(false);
-      setRender((prev) => !prev);
     } catch (error) {
-      toast("Não foi possível adicionar a lista, tente novamente!");
+      toast.error("Não foi possível adicionar a lista, tente novamente!");
     }
+  }, [titleInputList]);
+
+  useEffect(() => {
+    async function getAllLists() {
+      try {
+        const lists = await getLists();
+
+        if (lists.data.length === 1) {
+          setTitleListSelected(lists.data[0].title);
+          setIdListSelected(lists.data[0].id);
+        }
+
+        setAllLists(lists.data);
+      } catch (error) {
+        toast.error("Não foi possível carregar as listas, atualize a página.");
+      }
+    }
+
+    getAllLists();
+  }, [setAllLists, setIdListSelected, setTitleListSelected, addNewList]);
+
+  const handleItemClick = (item, index) => {
+    setSelectedItemIndex(index);
+    setIdListSelected(item.id);
+    setTitleListSelected(item.title);
+    setTaskSelected(null);
   };
 
   function handleKeyDown(event) {
-    if (event.keyCode === 13) {
-      addNewList();
-    }
+    if (event.keyCode === 13) addNewList();
   }
 
   return (
     <>
       <AllListsUl>
         {allLists.map((item, index) => (
-          <li
-            key={index}
-            onClick={() => {
-              handleItemClick(index);
-              setIdListSelected(item.id);
-              setTitleListSelected(item.title);
-              setTaskSelected(null);
-            }}
-          >
+          <li key={index} onClick={() => handleItemClick(item, index)}>
             <span>
               {selectedItemIndex === index && <IconCheck fontSize={"18px"} />}
             </span>
@@ -75,7 +77,7 @@ export default function Lists() {
       </AllListsUl>
 
       {openInputCreatedNewList ? (
-        <InputCreateNewListOrTask>
+        <InputCreateNewItem>
           <input
             type="text"
             placeholder="Digite o título da sua nova lista"
@@ -92,7 +94,7 @@ export default function Lists() {
 
             <button onClick={addNewList}>Salvar</button>
           </div>
-        </InputCreateNewListOrTask>
+        </InputCreateNewItem>
       ) : (
         <AddNewList onClick={() => setOpenInputCreatedNewList(true)}>
           <span>

@@ -40,7 +40,7 @@ export default function Search() {
         <SearchResponseContainer>
           <ul>
             {tasksSearch.map((item, index) => (
-              <ListTask
+              <ListTaskSearch
                 key={index}
                 name={item.name}
                 id={item.id}
@@ -58,7 +58,7 @@ export default function Search() {
   );
 }
 
-function ListTask({
+function ListTaskSearch({
   id,
   name,
   listId,
@@ -67,27 +67,20 @@ function ListTask({
   setSearchInput,
   indexList,
 }) {
-  const {
-    allLists,
-    render,
-    setRender,
-    setIdListSelected,
-    setTitleListSelected,
-    setSelectedItemIndex,
-  } = useContext(ListsContext);
-  const { setNameTaskSelected, setTaskSelected, setTaskIdSelected } =
-    useContext(TasksContext);
+  const listsContext = useContext(ListsContext);
+  const tasksContext = useContext(TasksContext);
 
   const openTask = async () => {
-    setNameTaskSelected(name);
-    setTaskSelected(0);
-    setTaskIdSelected(id);
-    setIdListSelected(listId);
-    setTitleListSelected(listName);
+    tasksContext.setNameTaskSelected(name);
+    tasksContext.setTaskSelected(0);
+    tasksContext.setTaskIdSelected(id);
+    listsContext.setIdListSelected(listId);
+    listsContext.setTitleListSelected(listName);
+    listsContext.setSelectedItemIndex(
+      listsContext.allLists.findIndex((item) => item.id === indexList)
+    );
     setTasksSearch([]);
     setSearchInput("");
-    setSelectedItemIndex(allLists.findIndex((item) => item.id === indexList));
-    setRender(!render);
   };
 
   return <li onClick={openTask}>{name}</li>;
