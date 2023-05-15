@@ -4,7 +4,7 @@ import styled from "styled-components";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { InputCreateNewItem } from "../../common/InputCreateNewListOrTask";
-import { getLists, postList } from "../../services/listsService";
+import { editOrderList, getLists, postList } from "../../services/listsService";
 import { IconCheck, IconPlus } from "../../common/Icons";
 
 export default function Lists() {
@@ -26,13 +26,13 @@ export default function Lists() {
     if (titleInputList === "") return;
 
     try {
-      await postList({ title: titleInputList });
+      await postList({ title: titleInputList, order: allLists.length + 1 });
       setTitleInputList("");
       setOpenInputCreatedNewList(false);
     } catch (error) {
       toast.error("Não foi possível adicionar a lista, tente novamente!");
     }
-  }, [titleInputList]);
+  }, [titleInputList, allLists.length]);
 
   useEffect(() => {
     async function getAllLists() {
@@ -71,11 +71,46 @@ export default function Lists() {
     if (event.keyCode === 13) addNewList();
   }
 
+  const handleDragStart = (event, index) => {
+    event.dataTransfer.setData("text/plain", index);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = async (event, newIndex) => {
+    event.preventDefault();
+
+    const oldIndex = event.dataTransfer.getData("text/plain");
+
+    if (oldIndex !== newIndex) {
+      const newList = [...allLists];
+      const [removed] = newList.splice(oldIndex, 1);
+      newList.splice(newIndex, 0, removed);
+
+      newList.forEach((item, index) => {
+        item.ordem = index + 1;
+
+        editOrderList({ listId: item.id, order: item.ordem });
+      });
+
+      setAllLists(newList);
+    }
+  };
+
   return (
     <>
       <AllListsUl>
         {allLists.map((item, index) => (
-          <li key={index} onClick={() => handleItemClick(item, index)}>
+          <li
+            key={index}
+            onClick={() => handleItemClick(item, index)}
+            draggable="true"
+            onDragStart={(event) => handleDragStart(event, index)}
+            onDragOver={handleDragOver}
+            onDrop={(event) => handleDrop(event, index)}
+          >
             <span>
               {selectedItemIndex === index && <IconCheck fontSize={"18px"} />}
             </span>
@@ -135,6 +170,11 @@ const AllListsUl = styled.ul`
     align-items: center;
     height: fit-content;
     margin-bottom: 5px;
+    background-color: white;
+    width: 100%;
+    height: 25px;
+    border-radius: 8px;
+    cursor: move;
   }
 `;
 

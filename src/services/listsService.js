@@ -34,4 +34,13 @@ function editTitleList(params) {
   return promise;
 }
 
-export { postList, getLists, deleteList, editTitleList };
+function editOrderList(params){
+  const { order, listId } = params;
+  
+  const config = createHeaders();
+
+  const promise = axios.put(`${BASE_URL}/lists/order/${listId}`, { order }, config);
+  return promise;
+}
+
+export { postList, getLists, deleteList, editTitleList, editOrderList };
