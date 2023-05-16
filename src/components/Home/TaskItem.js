@@ -32,6 +32,7 @@ export default function TaskItem(props) {
       tasksContext.setOpenInputTask(true);
       return;
     }
+    tasksContext.setNewTaskName("");
     tasksContext.setOpenInputTask(false);
     tasksContext.setTaskSelected(true);
     tasksContext.setNameTaskSelected(props.name);
@@ -43,12 +44,14 @@ export default function TaskItem(props) {
       if (props.isCompleted) {
         await editTaskUnfinished({
           taskId: props.id,
-          order: tasksContext.toDoTasks.length > 0 ? tasksContext.toDoTasks[tasksContext.toDoTasks.length - 1].order + 1 : 1,
+          order:
+            tasksContext.toDoTasks.length > 0 ? tasksContext.toDoTasks[tasksContext.toDoTasks.length - 1].order + 1 : 1,
         });
       } else {
         await editTaskFinished({
           taskId: props.id,
-          order: tasksContext.doneTasks.length > 0 ? tasksContext.doneTasks[tasksContext.doneTasks.length - 1].order + 1 : 1,
+          order:
+            tasksContext.doneTasks.length > 0 ? tasksContext.doneTasks[tasksContext.doneTasks.length - 1].order + 1 : 1,
         });
       }
 
@@ -89,11 +92,23 @@ export default function TaskItem(props) {
         onDrop={(event) => handleDrop(event, props.index)}
       >
         <Check color={props.isCompleted ? "gray" : ""} onClick={handleUpdatedTask}>
-          <div>{props.isCompleted ? <IconCloseTask color={"white"} cursor={"pointer"} /> : <IconCheckTask color={"white"} cursor={"pointer"} />}</div>
+          <div>
+            {props.isCompleted ? (
+              <IconCloseTask color={"white"} cursor={"pointer"} />
+            ) : (
+              <IconCheckTask color={"white"} cursor={"pointer"} />
+            )}
+          </div>
         </Check>
 
         {tasksContext.openInputTask && props.isSidebarTask ? (
-          <input type="text" defaultValue={props.name} onChange={(e) => tasksContext.setNewTaskName(e.target.value)} onKeyDown={handleEditTaskName} autoFocus />
+          <input
+            type="text"
+            defaultValue={props.name}
+            onChange={(e) => tasksContext.setNewTaskName(e.target.value)}
+            onKeyDown={handleEditTaskName}
+            autoFocus
+          />
         ) : (
           <DivTask onClick={handleOpenTask}>
             <TitleTask isCompleted={props.isCompleted} isSidebarTask={props.isSidebarTask}>

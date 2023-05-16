@@ -7,7 +7,8 @@ import ListsContext from "../../contexts/ListsContext";
 import styled from "styled-components";
 
 export default function ListTitleBar() {
-  const { allLists, idListSelected, titleListSelected, setTitleListSelected, editedTitleList, setEditedTitleList } = useContext(ListsContext);
+  const { allLists, idListSelected, titleListSelected, setTitleListSelected, editedTitleList, setEditedTitleList } =
+    useContext(ListsContext);
   const [newTitleList, setNewTitleList] = useState(titleListSelected);
 
   const handleEditTitleList = useCallback(async () => {
@@ -42,7 +43,9 @@ export default function ListTitleBar() {
           autoFocus
         />
       ) : (
-        <h1 onClick={() => setEditedTitleList(true)}>{!idListSelected && allLists.length > 0 ? allLists[0].title : titleListSelected}</h1>
+        <h1 onClick={() => setEditedTitleList(true)}>
+          {!idListSelected && allLists.length > 0 ? allLists[0].title : titleListSelected}
+        </h1>
       )}
 
       <div>
