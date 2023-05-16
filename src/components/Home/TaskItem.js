@@ -1,120 +1,75 @@
-import { useCallback, useContext, useState } from "react";
+import { useContext } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import {
-  IconCheckEdit,
-  IconCheckTask,
-  IconCloseTask,
-  IconEdit,
-  IconMoveList,
-} from "../../common/Icons";
 import TasksContext from "../../contexts/TasksContext";
-import {
-  editOrderTasks,
-  editTaskFinished,
-  editTaskName,
-} from "../../services/tasksService";
-import { editTaskUnfinished } from "../../services/tasksService";
+import { IconCheckTask, IconCloseTask, IconMoveList } from "../../common/Icons";
+import { editOrderTasks, editTaskFinished, editTaskName, editTaskUnfinished } from "../../services/tasksService";
 
 export default function TaskItem(props) {
-  const [openInputTask, setOpenInputTask] = useState(false);
-  const [newTaskName, setNewTaskName] = useState("");
   const tasksContext = useContext(TasksContext);
 
-  const handleEditTaskName = useCallback(async () => {
-    if (newTaskName === "") {
-      setOpenInputTask(false);
+  async function handleEditTaskName(event) {
+    if (event.keyCode === 13) {
+      try {
+        if (tasksContext.newTaskName === "") {
+          tasksContext.setOpenInputTask(false);
+          return;
+        }
+        await editTaskName({
+          taskId: tasksContext.taskIdSelected,
+          name: tasksContext.newTaskName,
+        });
+        tasksContext.setUpdatedTasks((prev) => !prev);
+        tasksContext.setOpenInputTask(false);
+      } catch (error) {
+        toast.error("Não foi possível modificar o nome da tarefa, tente novamente.");
+      }
+    }
+  }
+
+  const handleOpenTask = () => {
+    if (props.isSidebarTask) {
+      tasksContext.setOpenInputTask(true);
       return;
     }
+    tasksContext.setOpenInputTask(false);
+    tasksContext.setTaskSelected(true);
+    tasksContext.setNameTaskSelected(props.name);
+    tasksContext.setTaskIdSelected(props.id);
+  };
 
+  const handleUpdatedTask = async () => {
     try {
-      await editTaskName({
-        taskId: tasksContext.taskIdSelected,
-        name: newTaskName,
-      });
-      tasksContext.setUpdatedTasks((prev) => !prev);
-    } catch (error) {
-      toast.error(
-        "Não foi possível modificar o nome da tarefa, tente novamente."
-      );
-    }
-    setOpenInputTask(false);
-  }, [newTaskName, tasksContext]);
+      if (props.isCompleted) {
+        await editTaskUnfinished({
+          taskId: props.id,
+          order: tasksContext.toDoTasks.length > 0 ? tasksContext.toDoTasks[tasksContext.toDoTasks.length - 1].order + 1 : 1,
+        });
+      } else {
+        await editTaskFinished({
+          taskId: props.id,
+          order: tasksContext.doneTasks.length > 0 ? tasksContext.doneTasks[tasksContext.doneTasks.length - 1].order + 1 : 1,
+        });
+      }
 
-  const handleUnfinishTask = async () => {
-    try {
-      await editTaskUnfinished({
-        taskId: props.id,
-        order:
-          tasksContext.toDoTasks.length > 0
-            ? tasksContext.toDoTasks[tasksContext.toDoTasks.length - 1].order +
-              1
-            : 1,
-      });
       tasksContext.setUpdatedTasks((prev) => !prev);
     } catch (error) {
       toast.error("Não foi possível atualizar a tarefa");
     }
   };
 
-  const handleFinishTask = async () => {
-    try {
-      await editTaskFinished({
-        taskId: props.id,
-        order:
-          tasksContext.doneTasks.length > 0
-            ? tasksContext.doneTasks[tasksContext.doneTasks.length - 1].order +
-              1
-            : 1,
-      });
-      tasksContext.setUpdatedTasks((prev) => !prev);
-    } catch (error) {
-      toast.error("Não foi possível concluir a tarefa");
-    }
-  };
-
-  const handleOpenTask = () => {
-    if (props.isSidebarTask) {
-      setOpenInputTask(true);
-      return;
-    }
-
-    tasksContext.setNameTaskSelected(props.name);
-    tasksContext.setTaskSelected(true);
-    tasksContext.setTaskIdSelected(props.id);
-    setOpenInputTask(false);
-  };
-
-  function handleKeyDown(event) {
-    if (event.keyCode === 13) handleEditTaskName();
-  }
-
-  const handleDragStart = (event, index) => {
-    event.dataTransfer.setData("text/plain", index);
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
   const handleDrop = async (event, newIndex) => {
     event.preventDefault();
-
     const oldIndex = event.dataTransfer.getData("text/plain");
 
     if (oldIndex !== newIndex) {
-      const newList = [
-        ...(props.isCompleted
-          ? tasksContext.doneTasks
-          : tasksContext.toDoTasks),
-      ];
+      const newList = [...(props.isCompleted ? tasksContext.doneTasks : tasksContext.toDoTasks)];
       const [removed] = newList.splice(oldIndex, 1);
       newList.splice(newIndex, 0, removed);
 
-      newList.forEach((item, index) => {
+      newList.forEach(async (item, index) => {
         item.ordem = index + 1;
-
-        editOrderTasks({ taskId: item.id, order: item.ordem });
+        await editOrderTasks({ taskId: item.id, order: item.ordem });
       });
 
       if (props.isCompleted === true) {
@@ -126,73 +81,33 @@ export default function TaskItem(props) {
   };
 
   return (
-    <WrapperTaskItem isCompleted={props.isCompleted}>
+    <WrapperTaskItem isCompleted={props.isCompleted} isSidebarTask={props.isSidebarTask}>
       <li
         draggable={props.isSidebarTask ? "false" : "true"}
-        onDragStart={(event) => handleDragStart(event, props.index)}
-        onDragOver={handleDragOver}
+        onDragStart={(event) => event.dataTransfer.setData("text/plain", props.index)}
+        onDragOver={(event) => event.preventDefault()}
         onDrop={(event) => handleDrop(event, props.index)}
       >
-        {props.isCompleted ? (
-          <Check color={"gray"} onClick={handleUnfinishTask}>
-            <div>
-              <IconCloseTask color={"white"} cursor={"pointer"} />
-            </div>
-          </Check>
-        ) : (
-          <Check onClick={handleFinishTask}>
-            <div>
-              <IconCheckTask color={"white"} cursor={"pointer"} />
-            </div>
-          </Check>
-        )}
+        <Check color={props.isCompleted ? "gray" : ""} onClick={handleUpdatedTask}>
+          <div>{props.isCompleted ? <IconCloseTask color={"white"} cursor={"pointer"} /> : <IconCheckTask color={"white"} cursor={"pointer"} />}</div>
+        </Check>
 
-        {openInputTask ? (
-          <input
-            type="text"
-            defaultValue={props.name}
-            onChange={(e) => setNewTaskName(e.target.value)}
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
+        {tasksContext.openInputTask && props.isSidebarTask ? (
+          <input type="text" defaultValue={props.name} onChange={(e) => tasksContext.setNewTaskName(e.target.value)} onKeyDown={handleEditTaskName} autoFocus />
         ) : (
-          <Div>
-            <TitleTask onClick={handleOpenTask} isCompleted={props.isCompleted}>
+          <DivTask onClick={handleOpenTask}>
+            <TitleTask isCompleted={props.isCompleted} isSidebarTask={props.isSidebarTask}>
               {props.name}
             </TitleTask>
             <span>
               <IconMoveList />
             </span>
-          </Div>
+          </DivTask>
         )}
       </li>
-
-      {props.isSidebarTask && !openInputTask && (
-        <IconEdit
-          color={props.isCompleted ? "gray" : "var(--dark-green)"}
-          cursor={"pointer"}
-          fontSize={"17px"}
-          onClick={() => setOpenInputTask(true)}
-        />
-      )}
-
-      {props.isSidebarTask && openInputTask && (
-        <IconCheckEdit
-          color={props.isCompleted ? "gray" : "var(--dark-green)"}
-          cursor={"pointer"}
-          fontSize={"20px"}
-          onClick={handleEditTaskName}
-        />
-      )}
     </WrapperTaskItem>
   );
 }
-
-const Div = styled.section`
-  width: 90%;
-  display: flex;
-  justify-content: space-between;
-`;
 
 const WrapperTaskItem = styled.div`
   display: flex;
@@ -204,13 +119,13 @@ const WrapperTaskItem = styled.div`
   }
 
   li:hover {
-    background-color: #f8f8f8;
+    background-color: ${(props) => (props.isSidebarTask ? "transparent" : "#f8f8f8")};
     border-radius: 8px;
     margin-right: ${(props) => (props.isCompleted ? "2.5vw" : "0")};
   }
 
   li:hover span {
-    display: initial;
+    display: ${(props) => (props.isSidebarTask ? "none" : "initial")};
     cursor: move;
   }
 
@@ -223,8 +138,7 @@ const WrapperTaskItem = styled.div`
     background-color: transparent;
     border: none;
     color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
-    text-decoration: ${(props) =>
-      props.isCompleted ? "line-through" : "none"};
+    text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
     font-size: 16px;
     font-weight: 700;
   }
@@ -236,6 +150,12 @@ const WrapperTaskItem = styled.div`
   }
 `;
 
+const DivTask = styled.section`
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+`;
+
 const TitleTask = styled.p`
   color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
   text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
@@ -243,7 +163,7 @@ const TitleTask = styled.p`
   white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
+  cursor: ${(props) => (props.isSidebarTask ? "" : "pointer")};
 `;
 
 export const Check = styled.div`

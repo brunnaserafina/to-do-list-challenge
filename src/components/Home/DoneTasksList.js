@@ -9,8 +9,7 @@ import TasksContext from "../../contexts/TasksContext";
 
 export default function DoneTasksList() {
   const [openFinishedTasks, setOpenFinishedTasks] = useState(false);
-  const { doneTasks, setDoneTasks } = useContext(TasksContext);
-  const { updatedTasks } = useContext(TasksContext);
+  const { doneTasks, setDoneTasks, updatedTasks } = useContext(TasksContext);
   const { allLists, idListSelected } = useContext(ListsContext);
 
   useEffect(() => {

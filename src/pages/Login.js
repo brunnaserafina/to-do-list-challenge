@@ -1,13 +1,11 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import WrapperForm from "../common/FormLoginAndSignUp";
-import ListsContext from "../contexts/ListsContext";
 import { postLogin } from "../services/authenticationService";
 
 export default function Login() {
   const [form, setForm] = useState({});
-  const { setRender } = useContext(ListsContext);
   const navigate = useNavigate();
 
   function handleForm({ name, value }) {
@@ -31,7 +29,6 @@ export default function Login() {
         })
       );
       navigate("/");
-      setRender((prevRender) => !prevRender);
     } catch (err) {
       toast.error(
         "Não foi possível efetuar seu login. Confira seus dados e tente novamente!"

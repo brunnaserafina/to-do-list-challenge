@@ -9,7 +9,7 @@ export function ListsProvider({ children }) {
   const [idListSelected, setIdListSelected] = useState(null);
   const [titleListSelected, setTitleListSelected] = useState("");
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-  
+  const [editedTitleList, setEditedTitleList] = useState(false);
 
   return (
     <ListsContext.Provider
@@ -22,7 +22,8 @@ export function ListsProvider({ children }) {
         setIdListSelected,
         titleListSelected,
         setTitleListSelected,
-
+        editedTitleList,
+        setEditedTitleList,
       }}
     >
       {children}

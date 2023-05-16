@@ -13,6 +13,8 @@ export function TasksProvider({ children }) {
   const [titleNewTask, setTitleNewTask] = useState("");
   const [toDoTasks, setToDoTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState([]);
+  const [openInputTask, setOpenInputTask] = useState(false);
+  const [newTaskName, setNewTaskName] = useState("");
 
   return (
     <TasksContext.Provider
@@ -33,6 +35,10 @@ export function TasksProvider({ children }) {
         setToDoTasks,
         doneTasks,
         setDoneTasks,
+        openInputTask,
+        setOpenInputTask,
+        newTaskName,
+        setNewTaskName,
       }}
     >
       {children}

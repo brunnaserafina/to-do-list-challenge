@@ -7,9 +7,7 @@ import ListsContext from "../../contexts/ListsContext";
 import styled from "styled-components";
 
 export default function ListTitleBar() {
-  const [editedTitleList, setEditedTitleList] = useState(false);
-  const { allLists, idListSelected, titleListSelected, setTitleListSelected } =
-    useContext(ListsContext);
+  const { allLists, idListSelected, titleListSelected, setTitleListSelected, editedTitleList, setEditedTitleList } = useContext(ListsContext);
   const [newTitleList, setNewTitleList] = useState(titleListSelected);
 
   const handleEditTitleList = useCallback(async () => {
@@ -24,13 +22,11 @@ export default function ListTitleBar() {
         title: newTitleList,
       });
       setTitleListSelected(newTitleList);
+      setEditedTitleList(false);
     } catch (error) {
-      toast.error(
-        "Não foi possível modificar o nome da lista, tente novamente."
-      );
+      toast.error("Não foi possível modificar o nome da lista, tente novamente.");
     }
-    setEditedTitleList(false);
-  }, [allLists, idListSelected, newTitleList, setTitleListSelected]);
+  }, [allLists, idListSelected, newTitleList, setTitleListSelected, setEditedTitleList]);
 
   function handleKeyDown(event) {
     if (event.keyCode === 13) handleEditTitleList();
@@ -40,34 +36,20 @@ export default function ListTitleBar() {
     <WrapperListTitleBar>
       {editedTitleList ? (
         <input
-          defaultValue={
-            titleListSelected !== "" ? titleListSelected : allLists[0]?.title
-          }
+          defaultValue={titleListSelected !== "" ? titleListSelected : allLists[0]?.title}
           onChange={(e) => setNewTitleList(e.target.value)}
           onKeyDown={handleKeyDown}
           autoFocus
         />
       ) : (
-        <h1 onClick={() => setEditedTitleList(true)}>
-          {!idListSelected && allLists.length > 0
-            ? allLists[0].title
-            : titleListSelected}
-        </h1>
+        <h1 onClick={() => setEditedTitleList(true)}>{!idListSelected && allLists.length > 0 ? allLists[0].title : titleListSelected}</h1>
       )}
 
       <div>
         {editedTitleList ? (
-          <IconCheckEdit
-            color={"var(--dark-green)"}
-            fontSize={"20px"}
-            onClick={handleEditTitleList}
-          />
+          <IconCheckEdit color={"var(--dark-green)"} fontSize={"20px"} onClick={handleEditTitleList} />
         ) : (
-          <IconEdit
-            color={"var(--dark-green)"}
-            fontSize={"20px"}
-            onClick={() => setEditedTitleList(true)}
-          />
+          <IconEdit color={"var(--dark-green)"} fontSize={"20px"} onClick={() => setEditedTitleList(true)} />
         )}
 
         <DeleteList />

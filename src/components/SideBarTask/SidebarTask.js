@@ -6,20 +6,14 @@ import styled, { keyframes } from "styled-components";
 import TaskItem from "../Home/TaskItem";
 import DeleteTask from "./DeleteTask";
 import TasksContext from "../../contexts/TasksContext";
-import { getTaskById, putAnnotationTask } from "../../services/tasksService";
+import { editTaskName, getTaskById, putAnnotationTask } from "../../services/tasksService";
 import { IconCloseSidebarTask } from "../../common/Icons";
 
 export default function SidebarTask({ open }) {
   const [tasks, setTasks] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [annotations, setAnnotations] = useState([]);
-  const {
-    taskIdSelected,
-    annotation,
-    setAnnotation,
-    setTaskSelected,
-    updatedTasks,
-  } = useContext(TasksContext);
+  const { taskIdSelected, annotation, setAnnotation, setTaskSelected, updatedTasks, newTaskName, setUpdatedTasks, setOpenInputTask } = useContext(TasksContext);
 
   useEffect(() => {
     async function fetchTask() {
@@ -28,11 +22,7 @@ export default function SidebarTask({ open }) {
         setTasks(task.data);
         setAnnotation(task.data[0].annotation);
         setAnnotations([annotation]);
-        setStartDate(
-          task.data[0]?.date !== null
-            ? new Date(task.data[0]?.date.slice(0, -1))
-            : ""
-        );
+        setStartDate(task.data[0]?.date !== null ? new Date(task.data[0]?.date.slice(0, -1)) : "");
       } catch (error) {
         console.log(error);
         toast.error("Não foi possível carregar a tarefa");
@@ -43,14 +33,19 @@ export default function SidebarTask({ open }) {
 
   const handleSave = async (taskId, index) => {
     try {
-      await putAnnotationTask(
-        taskId,
-        annotations[index],
-        startDate ? startDate.toISOString() : null
-      );
+      if (newTaskName !== "") {
+        await editTaskName({
+          taskId: taskId,
+          name: newTaskName,
+        });
+        
+        setOpenInputTask(false);
+      }
+      await putAnnotationTask(taskId, annotations[index], startDate ? startDate.toISOString() : null);
       const newAnnotations = [...annotations];
       newAnnotations[index] = annotations[index];
       setAnnotations(newAnnotations);
+      setUpdatedTasks((prev) => !prev);
     } catch (error) {
       toast.error("Não foi possível salvar sua anotação, tente novamente!");
     }
@@ -60,12 +55,7 @@ export default function SidebarTask({ open }) {
     <WrapperSideBarTask open={open}>
       {tasks?.map((item, index) => (
         <div key={index}>
-          <TaskItem
-            id={item.id}
-            name={item.name}
-            isCompleted={item.is_completed}
-            isSidebarTask
-          />
+          <TaskItem id={item.id} name={item.name} isCompleted={item.is_completed} isSidebarTask />
 
           <TextArea
             value={annotations[index]}
@@ -82,11 +72,7 @@ export default function SidebarTask({ open }) {
           ></TextArea>
 
           <InputCalendar
-            value={
-              startDate
-                ? `Data de vencimento: ${format(startDate, "dd/MM/yyyy")}`
-                : `Escolha uma data de vencimento`
-            }
+            value={startDate ? `Data de vencimento: ${format(startDate, "dd/MM/yyyy")}` : `Escolha uma data de vencimento`}
             selected={startDate}
             dateFormat="dd/MM/yyyy"
             onChange={(date) => {
@@ -100,21 +86,14 @@ export default function SidebarTask({ open }) {
             aria-label="Data de vencimento"
           />
 
-          <Button
-            isCompleted={item.is_completed}
-            onClick={() => handleSave(item.id, index)}
-          >
+          <Button isCompleted={item.is_completed} onClick={() => handleSave(item.id, index)}>
             Salvar
           </Button>
         </div>
       ))}
 
       <CloseSideBarAndDeleteTask>
-        <IconCloseSidebarTask
-          fontSize={"25px"}
-          cursor={"pointer"}
-          onClick={() => setTaskSelected(null)}
-        />
+        <IconCloseSidebarTask fontSize={"25px"} cursor={"pointer"} onClick={() => setTaskSelected(null)} />
 
         <DeleteTask taskIdSelected={taskIdSelected} />
       </CloseSideBarAndDeleteTask>
@@ -206,10 +185,7 @@ const TextArea = styled.textarea`
 
   &:focus {
     outline: 0;
-    border: ${(props) =>
-      props.isCompleted
-        ? "solid 1.5px gray"
-        : "solid 1.5px var(--light-green)"};
+    border: ${(props) => (props.isCompleted ? "solid 1.5px gray" : "solid 1.5px var(--light-green)")};
     caret-color: var(--dark-green);
   }
 `;
@@ -217,8 +193,7 @@ const TextArea = styled.textarea`
 const Button = styled.button`
   width: 100%;
   border: none;
-  background-color: ${(props) =>
-    props.isCompleted ? "gray" : "var(--light-green)"};
+  background-color: ${(props) => (props.isCompleted ? "gray" : "var(--light-green)")};
   margin-top: 5px;
   height: 25px;
   color: var(--white);

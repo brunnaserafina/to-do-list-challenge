@@ -10,10 +10,8 @@ import TasksContext from "../../contexts/TasksContext";
 import ListTitleBar from "./ListTitleBar";
 
 export default function ToDoTasksList() {
-  const { toDoTasks, setToDoTasks } = useContext(TasksContext);
   const [createdNewTask, setCreatedNewTask] = useState(false);
-  const { updatedTasks, titleNewTask, setTitleNewTask } =
-    useContext(TasksContext);
+  const { toDoTasks, setToDoTasks, updatedTasks, titleNewTask, setTitleNewTask } = useContext(TasksContext);
   const { allLists, idListSelected } = useContext(ListsContext);
 
   const addNewTask = useCallback(async () => {
@@ -29,13 +27,7 @@ export default function ToDoTasksList() {
     } catch (error) {
       toast.error("Não foi possível adicionar a tarefa, tente novamente!");
     }
-  }, [
-    allLists,
-    idListSelected,
-    titleNewTask,
-    setTitleNewTask,
-    toDoTasks.length,
-  ]);
+  }, [allLists, idListSelected, titleNewTask, setTitleNewTask, toDoTasks.length]);
 
   useEffect(() => {
     async function getAllTasks() {
@@ -50,14 +42,7 @@ export default function ToDoTasksList() {
       }
     }
     getAllTasks();
-  }, [
-    allLists,
-    idListSelected,
-    addNewTask,
-    updatedTasks,
-    updatedTasks,
-    setToDoTasks,
-  ]);
+  }, [allLists, idListSelected, addNewTask, updatedTasks, updatedTasks, setToDoTasks]);
 
   function handleKeyDown(event) {
     if (event.keyCode === 13) addNewTask();
@@ -69,13 +54,7 @@ export default function ToDoTasksList() {
 
       <ul>
         {toDoTasks.map((item, index) => (
-          <TaskItem
-            key={index}
-            index={index}
-            name={item.name}
-            id={item.id}
-            isCompleted={item.is_completed}
-          />
+          <TaskItem key={index} index={index} name={item.name} id={item.id} isCompleted={item.is_completed} />
         ))}
       </ul>
 

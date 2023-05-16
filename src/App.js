@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { ListsProvider } from "./contexts/ListsContext";
 import { TasksProvider } from "./contexts/TasksContext";
@@ -17,20 +12,20 @@ export default function App() {
       <ToastContainer />
       <ListsProvider>
         <TasksProvider>
-        <Router>
-          <Routes>
-            <Route path="/sign-in" element={<Login />}></Route>
-            <Route path="/sign-up" element={<SignUp />}></Route>
-            <Route
-              path="/"
-              element={
-                <ProtectedRouteGuard>
-                  <Home />
-                </ProtectedRouteGuard>
-              }
-            ></Route>
-          </Routes>
-        </Router>
+          <Router>
+            <Routes>
+              <Route path="/sign-in" element={<Login />}></Route>
+              <Route path="/sign-up" element={<SignUp />}></Route>
+              <Route
+                path="/"
+                element={
+                  <ProtectedRouteGuard>
+                    <Home />
+                  </ProtectedRouteGuard>
+                }
+              ></Route>
+            </Routes>
+          </Router>
         </TasksProvider>
       </ListsProvider>
     </>
