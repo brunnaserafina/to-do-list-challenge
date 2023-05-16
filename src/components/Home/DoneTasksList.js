@@ -9,7 +9,7 @@ import TasksContext from "../../contexts/TasksContext";
 
 export default function DoneTasksList() {
   const [openFinishedTasks, setOpenFinishedTasks] = useState(false);
-  const [doneTasks, setDoneTasks] = useState([]);
+  const { doneTasks, setDoneTasks } = useContext(TasksContext);
   const { updatedTasks } = useContext(TasksContext);
   const { allLists, idListSelected } = useContext(ListsContext);
 
@@ -27,7 +27,7 @@ export default function DoneTasksList() {
     }
 
     getAllTasks();
-  }, [allLists, idListSelected, updatedTasks]);
+  }, [allLists, idListSelected, updatedTasks, setDoneTasks]);
 
   return (
     <DoneTasksContainer>
@@ -52,6 +52,7 @@ export default function DoneTasksList() {
           {doneTasks?.map((item, index) => (
             <TaskItem
               key={index}
+              index={index}
               id={item.id}
               name={item.name}
               isCompleted={item.is_completed}
@@ -67,10 +68,9 @@ const DoneTasksContainer = styled.div`
   width: 22.5vw;
   margin-bottom: 70px;
 
-  span {
+  > span {
     padding-right: 2.5vw;
     display: flex;
-    width: 100%;
     justify-content: space-between;
     margin-top: 5vh;
   }

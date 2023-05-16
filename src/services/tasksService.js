@@ -4,12 +4,12 @@ import createHeaders from "./headersConfig";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function postTask(body) {
-  const { name, listId } = body;
+  const { name, listId, order } = body;
   const config = createHeaders();
 
   const promise = axios.post(
     `${BASE_URL}/tasks/add/${listId}`,
-    { name },
+    { name, order },
     config
   );
   return promise;
@@ -38,22 +38,26 @@ function getTasksFinished(params) {
 }
 
 function editTaskFinished(params) {
-  const { taskId } = params;
+  const { taskId, order } = params;
 
   const config = createHeaders();
 
-  const promise = axios.put(`${BASE_URL}/tasks/edit/${taskId}`, {}, config);
+  const promise = axios.put(
+    `${BASE_URL}/tasks/edit/${taskId}`,
+    { order },
+    config
+  );
   return promise;
 }
 
 function editTaskUnfinished(params) {
-  const { taskId } = params;
+  const { taskId, order } = params;
 
   const config = createHeaders();
 
   const promise = axios.put(
     `${BASE_URL}/tasks/edit/unfinished/${taskId}`,
-    {},
+    { order },
     config
   );
   return promise;
@@ -108,6 +112,20 @@ function editTaskName(params) {
   return promise;
 }
 
+function editOrderTasks(params) {
+  const { taskId, order } = params;
+
+  const config = createHeaders();
+
+  const promise = axios.put(
+    `${BASE_URL}/tasks/order/${taskId}`,
+    { order },
+    config
+  );
+
+  return promise;
+}
+
 export {
   postTask,
   getTasksUnfinished,
@@ -119,4 +137,5 @@ export {
   putAnnotationTask,
   deleteTask,
   editTaskName,
+  editOrderTasks,
 };

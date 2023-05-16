@@ -6,9 +6,14 @@ import {
   IconCheckTask,
   IconCloseTask,
   IconEdit,
+  IconMoveList,
 } from "../../common/Icons";
 import TasksContext from "../../contexts/TasksContext";
-import { editTaskFinished, editTaskName } from "../../services/tasksService";
+import {
+  editOrderTasks,
+  editTaskFinished,
+  editTaskName,
+} from "../../services/tasksService";
 import { editTaskUnfinished } from "../../services/tasksService";
 
 export default function TaskItem(props) {
@@ -21,7 +26,7 @@ export default function TaskItem(props) {
       setOpenInputTask(false);
       return;
     }
-    
+
     try {
       await editTaskName({
         taskId: tasksContext.taskIdSelected,
@@ -38,7 +43,14 @@ export default function TaskItem(props) {
 
   const handleUnfinishTask = async () => {
     try {
-      await editTaskUnfinished({ taskId: props.id });
+      await editTaskUnfinished({
+        taskId: props.id,
+        order:
+          tasksContext.toDoTasks.length > 0
+            ? tasksContext.toDoTasks[tasksContext.toDoTasks.length - 1].order +
+              1
+            : 1,
+      });
       tasksContext.setUpdatedTasks((prev) => !prev);
     } catch (error) {
       toast.error("Não foi possível atualizar a tarefa");
@@ -47,7 +59,14 @@ export default function TaskItem(props) {
 
   const handleFinishTask = async () => {
     try {
-      await editTaskFinished({ taskId: props.id });
+      await editTaskFinished({
+        taskId: props.id,
+        order:
+          tasksContext.doneTasks.length > 0
+            ? tasksContext.doneTasks[tasksContext.doneTasks.length - 1].order +
+              1
+            : 1,
+      });
       tasksContext.setUpdatedTasks((prev) => !prev);
     } catch (error) {
       toast.error("Não foi possível concluir a tarefa");
@@ -70,9 +89,50 @@ export default function TaskItem(props) {
     if (event.keyCode === 13) handleEditTaskName();
   }
 
+  const handleDragStart = (event, index) => {
+    event.dataTransfer.setData("text/plain", index);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = async (event, newIndex) => {
+    event.preventDefault();
+
+    const oldIndex = event.dataTransfer.getData("text/plain");
+
+    if (oldIndex !== newIndex) {
+      const newList = [
+        ...(props.isCompleted
+          ? tasksContext.doneTasks
+          : tasksContext.toDoTasks),
+      ];
+      const [removed] = newList.splice(oldIndex, 1);
+      newList.splice(newIndex, 0, removed);
+
+      newList.forEach((item, index) => {
+        item.ordem = index + 1;
+
+        editOrderTasks({ taskId: item.id, order: item.ordem });
+      });
+
+      if (props.isCompleted === true) {
+        tasksContext.setDoneTasks(newList);
+      } else {
+        tasksContext.setToDoTasks(newList);
+      }
+    }
+  };
+
   return (
     <WrapperTaskItem isCompleted={props.isCompleted}>
-      <li>
+      <li
+        draggable={props.isSidebarTask ? "false" : "true"}
+        onDragStart={(event) => handleDragStart(event, props.index)}
+        onDragOver={handleDragOver}
+        onDrop={(event) => handleDrop(event, props.index)}
+      >
         {props.isCompleted ? (
           <Check color={"gray"} onClick={handleUnfinishTask}>
             <div>
@@ -96,9 +156,14 @@ export default function TaskItem(props) {
             autoFocus
           />
         ) : (
-          <TitleTask onClick={handleOpenTask} isCompleted={props.isCompleted}>
-            {props.name}
-          </TitleTask>
+          <Div>
+            <TitleTask onClick={handleOpenTask} isCompleted={props.isCompleted}>
+              {props.name}
+            </TitleTask>
+            <span>
+              <IconMoveList />
+            </span>
+          </Div>
         )}
       </li>
 
@@ -123,10 +188,36 @@ export default function TaskItem(props) {
   );
 }
 
+const Div = styled.section`
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+`;
+
 const WrapperTaskItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  li {
+    width: 100%;
+  }
+
+  li:hover {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    margin-right: ${(props) => (props.isCompleted ? "2.5vw" : "0")};
+  }
+
+  li:hover span {
+    display: initial;
+    cursor: move;
+  }
+
+  li span {
+    display: none;
+    color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
+  }
 
   input {
     background-color: transparent;
@@ -152,6 +243,7 @@ const TitleTask = styled.p`
   white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 `;
 
 export const Check = styled.div`
