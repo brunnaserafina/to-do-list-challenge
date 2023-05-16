@@ -5,7 +5,7 @@ import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { InputCreateNewItem } from "../../common/InputCreateNewListOrTask";
 import { editOrderList, getLists, postList } from "../../services/listsService";
-import { IconCheck, IconPlus } from "../../common/Icons";
+import { IconCheck, IconPlus, IconMoveList } from "../../common/Icons";
 
 export default function Lists() {
   const [openInputCreatedNewList, setOpenInputCreatedNewList] = useState(false);
@@ -96,6 +96,9 @@ export default function Lists() {
       });
 
       setAllLists(newList);
+      setSelectedItemIndex(
+        newList.findIndex((item) => item.title === titleListSelected)
+      );
     }
   };
 
@@ -116,6 +119,10 @@ export default function Lists() {
             </span>
 
             <p>{item.title}</p>
+
+            <span>
+              <IconMoveList fontSize={"19px"} />
+            </span>
           </li>
         ))}
       </AllListsUl>
@@ -155,6 +162,11 @@ const AllListsUl = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  position: relative;
+
+  li:hover span:nth-of-type(2) {
+    display: initial;
+  }
 
   p {
     margin-left: 8px;
@@ -165,6 +177,12 @@ const AllListsUl = styled.ul`
     width: 20px !important;
   }
 
+  span:nth-of-type(2) {
+    position: absolute;
+    right: 0;
+    display: none;
+  }
+
   li {
     display: flex;
     align-items: center;
@@ -172,7 +190,7 @@ const AllListsUl = styled.ul`
     margin-bottom: 5px;
     background-color: white;
     width: 100%;
-    height: 25px;
+    height: 30px;
     border-radius: 8px;
     cursor: move;
   }

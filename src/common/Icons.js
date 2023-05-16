@@ -9,6 +9,7 @@ import { FiLogOut } from "react-icons/fi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { CgMenu } from "react-icons/cg";
 import { FiEdit } from "react-icons/fi";
+import { RxDragHandleDots2 } from "react-icons/rx";
 
 export const IconArrowDown = IoIosArrowDown;
 export const IconArrowUp = IoIosArrowUp;
@@ -23,3 +24,4 @@ export const IconMenuHamburger = CgMenu;
 export const IconSearch = BsSearch;
 export const IconEdit = FiEdit;
 export const IconCheckEdit = AiOutlineCheckSquare;
+export const IconMoveList = RxDragHandleDots2;

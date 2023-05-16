@@ -34,12 +34,12 @@ function editTitleList(params) {
   return promise;
 }
 
-function editOrderList(params){
+async function editOrderList(params){
   const { order, listId } = params;
   
   const config = createHeaders();
 
-  const promise = axios.put(`${BASE_URL}/lists/order/${listId}`, { order }, config);
+  const promise = await axios.put(`${BASE_URL}/lists/order/${listId}`, { order }, config);
   return promise;
 }
 
