@@ -27,7 +27,7 @@ export default function TaskItem(props) {
     }
   }
 
-  const handleOpenTask = () => {
+  const handleOpenTaskOrInput = () => {
     if (props.isSidebarTask) {
       tasksContext.setOpenInputTask(true);
       return;
@@ -110,7 +110,7 @@ export default function TaskItem(props) {
             autoFocus
           />
         ) : (
-          <DivTask onClick={handleOpenTask}>
+          <DivTask onClick={handleOpenTaskOrInput}>
             <TitleTask isCompleted={props.isCompleted} isSidebarTask={props.isSidebarTask}>
               {props.name}
             </TitleTask>

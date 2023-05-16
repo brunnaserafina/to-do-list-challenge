@@ -13,7 +13,16 @@ export default function SidebarTask({ open }) {
   const [tasks, setTasks] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [annotations, setAnnotations] = useState([]);
-  const { taskIdSelected, annotation, setAnnotation, setTaskSelected, updatedTasks, newTaskName, setUpdatedTasks, setOpenInputTask } = useContext(TasksContext);
+  const {
+    taskIdSelected,
+    annotation,
+    setAnnotation,
+    setTaskSelected,
+    updatedTasks,
+    newTaskName,
+    setUpdatedTasks,
+    setOpenInputTask,
+  } = useContext(TasksContext);
 
   useEffect(() => {
     async function fetchTask() {
@@ -38,7 +47,7 @@ export default function SidebarTask({ open }) {
           taskId: taskId,
           name: newTaskName,
         });
-        
+
         setOpenInputTask(false);
       }
       await putAnnotationTask(taskId, annotations[index], startDate ? startDate.toISOString() : null);
@@ -72,7 +81,9 @@ export default function SidebarTask({ open }) {
           ></TextArea>
 
           <InputCalendar
-            value={startDate ? `Data de vencimento: ${format(startDate, "dd/MM/yyyy")}` : `Escolha uma data de vencimento`}
+            value={
+              startDate ? `Data de vencimento: ${format(startDate, "dd/MM/yyyy")}` : `Escolha uma data de vencimento`
+            }
             selected={startDate}
             dateFormat="dd/MM/yyyy"
             onChange={(date) => {
