@@ -98,7 +98,6 @@ const WrapperListTitleBar = styled.span`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 15%;
     padding: 0 5px;
   }
 `;
