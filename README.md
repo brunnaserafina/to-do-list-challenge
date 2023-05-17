@@ -8,7 +8,7 @@
 
 <div align="center"> 
 
-<img height="550" src="https://github.com/brunnaserafina/to-do-list-challenge/assets/106851605/396a8f67-140c-4042-8ba8-f4a7ce3ac5c5" />
+<img src="https://github.com/brunnaserafina/to-do-list-challenge/assets/106851605/396a8f67-140c-4042-8ba8-f4a7ce3ac5c5" />
 
  
   
@@ -31,11 +31,15 @@
 - Cabeçalho
 - Barra de pesquisa de tarefas
 - Sidebar com as listas do usuário
+- Modificar ordem dos itens da lista
 - Criar nova lista
+- Editar nome da lista
 - Visualizar em Home as tarefas a fazer e feitas do usuário de acordo com a lista selecionada
 - Adicionar nova tarefa
+- Editar nome da tarefa
 - Marcar tarefa como feita
 - Desfazer tarefa feita
+- Modificar ordem dos itens de tarefa
 - Deletar lista
 - Visualizar detalhes sobre a tarefa
 - Criar anotações para a tarefa
