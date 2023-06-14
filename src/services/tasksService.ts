@@ -3,19 +3,31 @@ import createHeaders from "./headersConfig";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-function postTask(body) {
+interface PostTaskProps {
+  name: string;
+  listId: number;
+  order: number;
+}
+
+interface GetTasks {
+  listId: number;
+}
+
+interface EditTask {
+  taskId: number;
+  order?: number;
+  name?: string;
+}
+
+function postTask(body: PostTaskProps) {
   const { name, listId, order } = body;
   const config = createHeaders();
 
-  const promise = axios.post(
-    `${BASE_URL}/tasks/add/${listId}`,
-    { name, order },
-    config
-  );
+  const promise = axios.post(`${BASE_URL}/tasks/add/${listId}`, { name, order }, config);
   return promise;
 }
 
-function getTasksUnfinished(params) {
+function getTasksUnfinished(params: GetTasks) {
   const { listId } = params;
 
   if (listId === null) return;
@@ -26,7 +38,7 @@ function getTasksUnfinished(params) {
   return promise;
 }
 
-function getTasksFinished(params) {
+function getTasksFinished(params: GetTasks) {
   const { listId } = params;
 
   if (listId === null) return;
@@ -37,44 +49,33 @@ function getTasksFinished(params) {
   return promise;
 }
 
-function editTaskFinished(params) {
+function editTaskFinished(params: EditTask) {
   const { taskId, order } = params;
 
   const config = createHeaders();
 
-  const promise = axios.put(
-    `${BASE_URL}/tasks/edit/${taskId}`,
-    { order },
-    config
-  );
+  const promise = axios.put(`${BASE_URL}/tasks/edit/${taskId}`, { order }, config);
   return promise;
 }
 
-function editTaskUnfinished(params) {
+function editTaskUnfinished(params: EditTask) {
   const { taskId, order } = params;
 
   const config = createHeaders();
 
-  const promise = axios.put(
-    `${BASE_URL}/tasks/edit/unfinished/${taskId}`,
-    { order },
-    config
-  );
+  const promise = axios.put(`${BASE_URL}/tasks/edit/unfinished/${taskId}`, { order }, config);
   return promise;
 }
 
-function getTasksBySearch(search) {
+function getTasksBySearch(search: string) {
   const config = createHeaders();
 
-  const promise = axios.get(
-    `${BASE_URL}/tasks/?search=${search.toLowerCase()}`,
-    config
-  );
+  const promise = axios.get(`${BASE_URL}/tasks/?search=${search.toLowerCase()}`, config);
 
   return promise;
 }
 
-function getTaskById(taskId) {
+function getTaskById(taskId: number) {
   const config = createHeaders();
 
   const promise = axios.get(`${BASE_URL}/tasks/${taskId}`, config);
@@ -82,19 +83,15 @@ function getTaskById(taskId) {
   return promise;
 }
 
-function putAnnotationTask(taskId, annotation, date) {
+function putAnnotationTask(taskId: number, annotation: string, date: string | null) {
   const config = createHeaders();
 
-  const promise = axios.put(
-    `${BASE_URL}/tasks/anotation/${taskId}`,
-    { annotation, date },
-    config
-  );
+  const promise = axios.put(`${BASE_URL}/tasks/anotation/${taskId}`, { annotation, date }, config);
 
   return promise;
 }
 
-function deleteTask(taskId) {
+function deleteTask(taskId: number) {
   const config = createHeaders();
 
   const promise = axios.delete(`${BASE_URL}/tasks/${taskId}`, config);
@@ -102,7 +99,7 @@ function deleteTask(taskId) {
   return promise;
 }
 
-function editTaskName(params) {
+function editTaskName(params: EditTask) {
   const { taskId, name } = params;
 
   const config = createHeaders();
@@ -112,16 +109,12 @@ function editTaskName(params) {
   return promise;
 }
 
-function editOrderTasks(params) {
+function editOrderTasks(params: EditTask) {
   const { taskId, order } = params;
 
   const config = createHeaders();
 
-  const promise = axios.put(
-    `${BASE_URL}/tasks/order/${taskId}`,
-    { order },
-    config
-  );
+  const promise = axios.put(`${BASE_URL}/tasks/order/${taskId}`, { order }, config);
 
   return promise;
 }

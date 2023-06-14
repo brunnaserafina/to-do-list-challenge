@@ -3,13 +3,27 @@ import { IconCheck, IconMoveList } from "../../common/Icons";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { editOrderList } from "../../services/listsService";
+import { IList } from "../../shared/IList";
 
-export default function ListItem({ item, index }) {
-  const { setTaskSelected, setTitleNewTask } = useContext(TasksContext);
-  const { allLists, setAllLists, selectedItemIndex, setSelectedItemIndex, setIdListSelected, setTitleListSelected, titleListSelected, setEditedTitleList } =
-    useContext(ListsContext);
+interface ListItemProps {
+  item: any;
+  index: any;
+}
 
-  const handleItemClick = (item, index) => {
+export default function ListItem({ item, index }: ListItemProps) {
+  const { setTaskSelected, setTitleNewTask } = useContext(TasksContext)!;
+  const {
+    allLists,
+    setAllLists,
+    selectedItemIndex,
+    setSelectedItemIndex,
+    setIdListSelected,
+    setTitleListSelected,
+    titleListSelected,
+    setEditedTitleList,
+  } = useContext(ListsContext)!;
+
+  const handleItemClick = (item: IList, index: number) => {
     setEditedTitleList(false);
     setSelectedItemIndex(index);
     setIdListSelected(item.id);
@@ -18,9 +32,9 @@ export default function ListItem({ item, index }) {
     setTitleNewTask("");
   };
 
-  const handleDrop = async (event, newIndex) => {
+  const handleDrop = async (event: React.DragEvent<HTMLLIElement>, newIndex: any) => {
     event.preventDefault();
-    const oldIndex = event.dataTransfer.getData("text/plain");
+    const oldIndex: any = event.dataTransfer.getData("text/plain");
 
     if (oldIndex !== newIndex) {
       const newList = [...allLists];

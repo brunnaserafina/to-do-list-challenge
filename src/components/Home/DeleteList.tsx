@@ -1,23 +1,21 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import Modal from "react-modal";
 import { IconDelete } from "../../common/Icons";
 import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { deleteList, getLists } from "../../services/listsService";
 import styled from "styled-components";
+import ReactModal, { Styles } from "react-modal";
 
 export default function DeleteList() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const tasksContext = useContext(TasksContext);
-  const listsContext = useContext(ListsContext);
+  const tasksContext = useContext(TasksContext)!;
+  const listsContext = useContext(ListsContext)!;
 
   async function deleteListConfirm() {
     try {
       await deleteList({
-        listId: listsContext.idListSelected
-          ? listsContext.idListSelected
-          : listsContext.allLists[0].id,
+        listId: listsContext.idListSelected ? listsContext.idListSelected : listsContext.allLists[0].id,
       });
 
       tasksContext.setTaskSelected(null);
@@ -45,21 +43,14 @@ export default function DeleteList() {
   return (
     <>
       {modalIsOpen && (
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={customStyles}
-          ariaHideApp={false}
-        >
-          <MessageConfirm>
-            Tem certeza que deseja deletar essa lista?
-          </MessageConfirm>
+        <ReactModal isOpen={modalIsOpen} onRequestClose={closeModal} ariaHideApp={false} style={customStyles}>
+          <MessageConfirm>Tem certeza que deseja deletar essa lista?</MessageConfirm>
 
           <div>
             <Button onClick={closeModal}>Cancelar</Button>
             <Button onClick={deleteListConfirm}>Deletar</Button>
           </div>
-        </Modal>
+        </ReactModal>
       )}
 
       <IconDelete
@@ -70,6 +61,11 @@ export default function DeleteList() {
       />
     </>
   );
+}
+
+interface CustomStyles extends Styles {
+  content?: React.CSSProperties;
+  overlay?: React.CSSProperties;
 }
 
 export const MessageConfirm = styled.p`
@@ -97,7 +93,7 @@ export const Button = styled.button`
   }
 `;
 
-export const customStyles = {
+export const customStyles: CustomStyles = {
   content: {
     top: "20%",
     left: "50%",

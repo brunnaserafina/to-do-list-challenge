@@ -10,9 +10,9 @@ import TasksContext from "../../contexts/TasksContext";
 import ListTitleBar from "./ListTitleBar";
 
 export default function ToDoTasksList() {
-  const [createdNewTask, setCreatedNewTask] = useState(false);
-  const { toDoTasks, setToDoTasks, updatedTasks, titleNewTask, setTitleNewTask } = useContext(TasksContext);
-  const { allLists, idListSelected } = useContext(ListsContext);
+  const [createdNewTask, setCreatedNewTask] = useState<boolean>(false);
+  const { toDoTasks, setToDoTasks, updatedTasks, titleNewTask, setTitleNewTask } = useContext(TasksContext)!;
+  const { allLists, idListSelected } = useContext(ListsContext)!;
 
   const addNewTask = useCallback(async () => {
     if (titleNewTask === "") return;
@@ -36,7 +36,7 @@ export default function ToDoTasksList() {
           listId: idListSelected ? idListSelected : allLists[0].id,
         });
 
-        setToDoTasks(tasksUnfinished.data);
+        setToDoTasks(tasksUnfinished?.data);
       } catch (error) {
         toast.error("Não foi possível carregar as tarefas");
       }
@@ -44,7 +44,7 @@ export default function ToDoTasksList() {
     getAllTasks();
   }, [allLists, idListSelected, addNewTask, updatedTasks, updatedTasks, setToDoTasks]);
 
-  function handleKeyDown(event) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.keyCode === 13) addNewTask();
   }
 
@@ -53,7 +53,7 @@ export default function ToDoTasksList() {
       <ListTitleBar />
 
       <ul>
-        {toDoTasks.map((item, index) => (
+        {toDoTasks.map((item: any, index: number) => (
           <TaskItem key={index} index={index} name={item.name} id={item.id} isCompleted={item.is_completed} />
         ))}
       </ul>

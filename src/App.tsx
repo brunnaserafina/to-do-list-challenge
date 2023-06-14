@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { ListsProvider } from "./contexts/ListsContext";
@@ -32,8 +33,13 @@ export default function App() {
   );
 }
 
-function ProtectedRouteGuard({ children }) {
-  const token = JSON.parse(localStorage.getItem("to-do-list"))?.token;
+interface ProtectedRouteGuardProps {
+  children: ReactElement;
+}
+
+function ProtectedRouteGuard({ children }: ProtectedRouteGuardProps) {
+  const localStorageItem = localStorage.getItem("to-do-list");
+  const token = localStorageItem !== null ? JSON.parse(localStorageItem).token : null;
 
   if (!token) {
     return <Navigate to="/sign-in" />;

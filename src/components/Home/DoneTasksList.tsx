@@ -7,10 +7,17 @@ import { getTasksFinished } from "../../services/tasksService";
 import { IconArrowDown, IconArrowUp } from "../../common/Icons";
 import TasksContext from "../../contexts/TasksContext";
 
+interface DoneTask {
+  key: number;
+  id: number;
+  name: string;
+  is_completed: boolean;
+}
+
 export default function DoneTasksList() {
-  const [openFinishedTasks, setOpenFinishedTasks] = useState(false);
-  const { doneTasks, setDoneTasks, updatedTasks } = useContext(TasksContext);
-  const { allLists, idListSelected } = useContext(ListsContext);
+  const [openFinishedTasks, setOpenFinishedTasks] = useState<boolean>(false);
+  const { doneTasks, setDoneTasks, updatedTasks } = useContext(TasksContext)!;
+  const { allLists, idListSelected } = useContext(ListsContext)!;
 
   useEffect(() => {
     async function getAllTasks() {
@@ -34,28 +41,16 @@ export default function DoneTasksList() {
         <h2>Tarefas concluídas ({doneTasks?.length})</h2>
 
         {openFinishedTasks ? (
-          <IconArrowUp
-            cursor={"pointer"}
-            onClick={() => setOpenFinishedTasks(false)}
-          />
+          <IconArrowUp cursor={"pointer"} onClick={() => setOpenFinishedTasks(false)} />
         ) : (
-          <IconArrowDown
-            cursor={"pointer"}
-            onClick={() => setOpenFinishedTasks(true)}
-          />
+          <IconArrowDown cursor={"pointer"} onClick={() => setOpenFinishedTasks(true)} />
         )}
       </span>
 
       {openFinishedTasks && (
         <ul>
-          {doneTasks?.map((item, index) => (
-            <TaskItem
-              key={index}
-              index={index}
-              id={item.id}
-              name={item.name}
-              isCompleted={item.is_completed}
-            />
+          {doneTasks?.map((item: DoneTask, index: number) => (
+            <TaskItem key={index} index={index} id={item.id} name={item.name} isCompleted={item.is_completed} />
           ))}
         </ul>
       )}

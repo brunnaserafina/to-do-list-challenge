@@ -3,10 +3,15 @@ import { toast } from "react-toastify";
 import styled, { keyframes } from "styled-components";
 import { putLogout } from "../../services/authenticationService";
 
-export default function UserMenuWithLogout({ open }) {
-  const navigate = useNavigate("");
-  const name = JSON.parse(localStorage.getItem("to-do-list"))?.name;
-  const email = JSON.parse(localStorage.getItem("to-do-list"))?.email;
+interface UserMenuWithLogoutProps {
+  open: boolean;
+}
+
+export default function UserMenuWithLogout({ open }: UserMenuWithLogoutProps) {
+  const navigate = useNavigate();
+  const storedValue = localStorage.getItem("to-do-list");
+  const name = typeof storedValue === "string" ? JSON.parse(storedValue)?.name : undefined;
+  const email = typeof storedValue === "string" ? JSON.parse(storedValue)?.email : undefined;
 
   async function handleLogout() {
     try {
@@ -14,20 +19,22 @@ export default function UserMenuWithLogout({ open }) {
       localStorage.removeItem("to-do-list");
       navigate("/sign-in");
     } catch (error) {
-      toast.error(
-        "Não foi possível sair da sua conta, atualize a página e tente novamente!"
-      );
+      toast.error("Não foi possível sair da sua conta, atualize a página e tente novamente!");
     }
   }
 
   return (
-    <UserMenu open={open}>
+    <UserMenu isOpen={open}>
       <h2>{name}</h2>
       <h3>{email}</h3>
       <p onClick={handleLogout}>Sair</p>
     </UserMenu>
   );
 }
+
+type UserMenuProps = {
+  isOpen: boolean;
+};
 
 const fadeIn = keyframes`
   from {
@@ -40,7 +47,7 @@ const fadeIn = keyframes`
   }
 `;
 
-const UserMenu = styled.div`
+const UserMenu = styled.div<UserMenuProps>`
   min-width: fit-content;
   width: 15vw;
   height: 70px;
@@ -52,10 +59,10 @@ const UserMenu = styled.div`
   color: var(--white);
   padding: 8px;
   cursor: initial;
-  opacity: ${({ open }) => (open ? 1 : 0)};
-  transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-10px)")};
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  transform: ${({ isOpen }) => (isOpen ? "translateY(0)" : "translateY(-10px)")};
   transition: opacity 0.3s ease, transform 0.7s ease;
-  animation: ${({ open }) => (open ? fadeIn : null)} 0.7s ease;
+  animation: ${({ isOpen }) => (isOpen ? fadeIn : null)} 0.7s ease;
 
   h2 {
     font-weight: 700;

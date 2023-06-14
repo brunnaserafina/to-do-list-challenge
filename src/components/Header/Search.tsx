@@ -6,11 +6,21 @@ import ListsContext from "../../contexts/ListsContext";
 import TasksContext from "../../contexts/TasksContext";
 import { getTasksBySearch } from "../../services/tasksService";
 
-export default function Search() {
-  const [searchInput, setSearchInput] = useState("");
-  const [tasksSearch, setTasksSearch] = useState([]);
+interface TaskSearch {
+  id: number;
+  name: string;
+  list_id: number;
+  lists: {
+    title: string;
+    id: number;
+  };
+}
 
-  const searchTask = async (search) => {
+export default function Search() {
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [tasksSearch, setTasksSearch] = useState<TaskSearch[]>([]);
+
+  const searchTask = async (search: string) => {
     setSearchInput(search);
 
     if (search.length >= 1) {
@@ -58,6 +68,16 @@ export default function Search() {
   );
 }
 
+interface ListTaskSearchProps {
+  id: number;
+  name: string;
+  listId: number;
+  listName: string;
+  setTasksSearch: (value: TaskSearch[]) => void;
+  setSearchInput: (value: string) => void;
+  indexList: number;
+}
+
 function ListTaskSearch({
   id,
   name,
@@ -66,9 +86,9 @@ function ListTaskSearch({
   setTasksSearch,
   setSearchInput,
   indexList,
-}) {
-  const listsContext = useContext(ListsContext);
-  const tasksContext = useContext(TasksContext);
+}: ListTaskSearchProps) {
+  const listsContext = useContext(ListsContext)!;
+  const tasksContext = useContext(TasksContext)!;
 
   const openTask = () => {
     tasksContext.setNameTaskSelected(name);
@@ -76,9 +96,7 @@ function ListTaskSearch({
     tasksContext.setTaskIdSelected(id);
     listsContext.setIdListSelected(listId);
     listsContext.setTitleListSelected(listName);
-    listsContext.setSelectedItemIndex(
-      listsContext.allLists.findIndex((item) => item.id === indexList)
-    );
+    listsContext.setSelectedItemIndex(listsContext.allLists.findIndex((item: { id: number }) => item.id === indexList));
     setTasksSearch([]);
     setSearchInput("");
   };
@@ -139,5 +157,4 @@ const SearchInput = styled.div`
   @media (max-width: 767px) {
     width: 150px;
   }
-
 `;

@@ -3,12 +3,23 @@ import createHeaders from "./headersConfig";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-function postSignUp(body) {
+interface bodySignUp {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface bodyLogin {
+  email: string;
+  password: string;
+}
+
+function postSignUp(body: bodySignUp) {
   const promise = axios.post(`${BASE_URL}/auth/sign-up`, body);
   return promise;
 }
 
-function postLogin(body) {
+function postLogin(body: bodyLogin) {
   const promise = axios.post(`${BASE_URL}/auth/sign-in`, body);
   return promise;
 }

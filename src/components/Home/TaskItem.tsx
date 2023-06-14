@@ -4,23 +4,25 @@ import styled from "styled-components";
 import TasksContext from "../../contexts/TasksContext";
 import { IconCheckTask, IconCloseTask, IconMoveList } from "../../common/Icons";
 import { editOrderTasks, editTaskFinished, editTaskName, editTaskUnfinished } from "../../services/tasksService";
+import { ITask } from "../../shared/ITask";
 
-export default function TaskItem(props) {
+export default function TaskItem(props: ITask) {
   const tasksContext = useContext(TasksContext);
+  const { toDoTasks, doneTasks } = useContext(TasksContext)!;
 
-  async function handleEditTaskName(event) {
+  async function handleEditTaskName(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.keyCode === 13) {
       try {
-        if (tasksContext.newTaskName === "") {
+        if (tasksContext?.newTaskName === "") {
           tasksContext.setOpenInputTask(false);
           return;
         }
         await editTaskName({
-          taskId: tasksContext.taskIdSelected,
-          name: tasksContext.newTaskName,
+          taskId: tasksContext?.taskIdSelected,
+          name: tasksContext?.newTaskName,
         });
-        tasksContext.setUpdatedTasks((prev) => !prev);
-        tasksContext.setOpenInputTask(false);
+        tasksContext?.setUpdatedTasks((prev: boolean) => !prev);
+        tasksContext?.setOpenInputTask(false);
       } catch (error) {
         toast.error("Não foi possível modificar o nome da tarefa, tente novamente.");
       }
@@ -29,14 +31,14 @@ export default function TaskItem(props) {
 
   const handleOpenTaskOrInput = () => {
     if (props.isSidebarTask) {
-      tasksContext.setOpenInputTask(true);
+      tasksContext?.setOpenInputTask(true);
       return;
     }
-    tasksContext.setNewTaskName("");
-    tasksContext.setOpenInputTask(false);
-    tasksContext.setTaskSelected(true);
-    tasksContext.setNameTaskSelected(props.name);
-    tasksContext.setTaskIdSelected(props.id);
+    tasksContext?.setNewTaskName("");
+    tasksContext?.setOpenInputTask(false);
+    tasksContext?.setTaskSelected(true);
+    tasksContext?.setNameTaskSelected(props.name);
+    tasksContext?.setTaskIdSelected(props.id);
   };
 
   const handleUpdatedTask = async () => {
@@ -45,28 +47,32 @@ export default function TaskItem(props) {
         await editTaskUnfinished({
           taskId: props.id,
           order:
-            tasksContext.toDoTasks.length > 0 ? tasksContext.toDoTasks[tasksContext.toDoTasks.length - 1].order + 1 : 1,
+            toDoTasks.length > 0
+              ? tasksContext?.toDoTasks[tasksContext.toDoTasks.length - 1].order + 1
+              : 1,
         });
       } else {
         await editTaskFinished({
           taskId: props.id,
           order:
-            tasksContext.doneTasks.length > 0 ? tasksContext.doneTasks[tasksContext.doneTasks.length - 1].order + 1 : 1,
+            doneTasks.length > 0
+              ? tasksContext?.doneTasks[tasksContext.doneTasks.length - 1].order + 1
+              : 1,
         });
       }
 
-      tasksContext.setUpdatedTasks((prev) => !prev);
+      tasksContext?.setUpdatedTasks((prev: boolean) => !prev);
     } catch (error) {
       toast.error("Não foi possível atualizar a tarefa");
     }
   };
 
-  const handleDrop = async (event, newIndex) => {
+  const handleDrop = async (event: any, newIndex: any) => {
     event.preventDefault();
     const oldIndex = event.dataTransfer.getData("text/plain");
 
     if (oldIndex !== newIndex) {
-      const newList = [...(props.isCompleted ? tasksContext.doneTasks : tasksContext.toDoTasks)];
+      const newList = [...(props.isCompleted ? doneTasks : toDoTasks)];
       const [removed] = newList.splice(oldIndex, 1);
       newList.splice(newIndex, 0, removed);
 
@@ -76,15 +82,15 @@ export default function TaskItem(props) {
       });
 
       if (props.isCompleted === true) {
-        tasksContext.setDoneTasks(newList);
+        tasksContext?.setDoneTasks(newList);
       } else {
-        tasksContext.setToDoTasks(newList);
+        tasksContext?.setToDoTasks(newList);
       }
     }
   };
 
   return (
-    <WrapperTaskItem isCompleted={props.isCompleted} isSidebarTask={props.isSidebarTask}>
+    <WrapperTaskItem isComplete={props.isCompleted} isSidebartask={props.isSidebarTask}>
       <li
         draggable={props.isSidebarTask ? "false" : "true"}
         onDragStart={(event) => event.dataTransfer.setData("text/plain", props.index)}
@@ -101,7 +107,7 @@ export default function TaskItem(props) {
           </div>
         </Check>
 
-        {tasksContext.openInputTask && props.isSidebarTask ? (
+        {tasksContext?.openInputTask && props.isSidebarTask ? (
           <input
             type="text"
             defaultValue={props.name}
@@ -111,7 +117,7 @@ export default function TaskItem(props) {
           />
         ) : (
           <DivTask onClick={handleOpenTaskOrInput}>
-            <TitleTask isCompleted={props.isCompleted} isSidebarTask={props.isSidebarTask}>
+            <TitleTask isComplete={props.isCompleted} isSidebartask={props.isSidebarTask}>
               {props.name}
             </TitleTask>
             <span>
@@ -124,7 +130,12 @@ export default function TaskItem(props) {
   );
 }
 
-const WrapperTaskItem = styled.div`
+type PropsStyle = {
+  isComplete?: boolean;
+  isSidebartask?: boolean | undefined;
+};
+
+const WrapperTaskItem = styled.div<PropsStyle>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -134,26 +145,26 @@ const WrapperTaskItem = styled.div`
   }
 
   li:hover {
-    background-color: ${(props) => (props.isSidebarTask ? "transparent" : "#f8f8f8")};
+    background-color: ${(props) => (props.isSidebartask ? "transparent" : "#f8f8f8")};
     border-radius: 8px;
-    margin-right: ${(props) => (props.isCompleted ? "2.5vw" : "0")};
+    margin-right: ${(props) => (props.isComplete ? "2.5vw" : "0")};
   }
 
   li:hover span {
-    display: ${(props) => (props.isSidebarTask ? "none" : "initial")};
+    display: ${(props) => (props.isSidebartask ? "none" : "initial")};
     cursor: move;
   }
 
   li span {
     display: none;
-    color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
+    color: ${(props) => (props.isComplete ? "gray" : "var(--dark-green)")};
   }
 
   input {
     background-color: transparent;
     border: none;
-    color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
-    text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
+    color: ${(props) => (props.isComplete ? "gray" : "var(--dark-green)")};
+    text-decoration: ${(props) => (props.isComplete ? "line-through" : "none")};
     font-size: 16px;
     font-weight: 700;
   }
@@ -171,14 +182,14 @@ const DivTask = styled.section`
   justify-content: space-between;
 `;
 
-const TitleTask = styled.p`
-  color: ${(props) => (props.isCompleted ? "gray" : "var(--dark-green)")};
-  text-decoration: ${(props) => (props.isCompleted ? "line-through" : "none")};
+const TitleTask = styled.p<PropsStyle>`
+  color: ${(props) => (props.isComplete ? "gray" : "var(--dark-green)")};
+  text-decoration: ${(props) => (props.isComplete ? "line-through" : "none")};
   max-width: 88%;
   white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: ${(props) => (props.isSidebarTask ? "" : "pointer")};
+  cursor: ${(props) => (props.isSidebartask ? "" : "pointer")};
 `;
 
 export const Check = styled.div`

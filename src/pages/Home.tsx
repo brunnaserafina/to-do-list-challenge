@@ -12,8 +12,8 @@ import SidebarLists from "../components/SidebarLists/SidebarLists";
 
 export default function Home() {
   const [openSidebarLists, setOpenSidebarLists] = useState(true);
-  const { allLists } = useContext(ListsContext);
-  const { taskSelected } = useContext(TasksContext);
+  const { allLists } = useContext(ListsContext)!;
+  const { taskSelected } = useContext(TasksContext)!;
 
   const hasLists = allLists.length > 0;
 

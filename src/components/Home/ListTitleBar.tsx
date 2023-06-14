@@ -8,7 +8,7 @@ import styled from "styled-components";
 
 export default function ListTitleBar() {
   const { allLists, idListSelected, titleListSelected, setTitleListSelected, editedTitleList, setEditedTitleList } =
-    useContext(ListsContext);
+    useContext(ListsContext)!;
   const [newTitleList, setNewTitleList] = useState(titleListSelected);
 
   const handleEditTitleList = useCallback(async () => {
@@ -29,7 +29,7 @@ export default function ListTitleBar() {
     }
   }, [allLists, idListSelected, newTitleList, setTitleListSelected, setEditedTitleList]);
 
-  function handleKeyDown(event) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.keyCode === 13) handleEditTitleList();
   }
 

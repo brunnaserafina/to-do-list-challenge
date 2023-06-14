@@ -6,9 +6,13 @@ import TasksContext from "../../contexts/TasksContext";
 import { deleteTask } from "../../services/tasksService";
 import { Button, customStyles, MessageConfirm } from "../Home/DeleteList";
 
-export default function DeleteTask({ taskIdSelected }) {
+interface DeleteTaskProps {
+  taskIdSelected: number;
+}
+
+export default function DeleteTask({ taskIdSelected }: DeleteTaskProps) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const { setTaskSelected, setUpdatedTasks } = useContext(TasksContext);
+  const { setTaskSelected, setUpdatedTasks } = useContext(TasksContext)!;
 
   const deleteTaskConfirm = useCallback(async () => {
     try {

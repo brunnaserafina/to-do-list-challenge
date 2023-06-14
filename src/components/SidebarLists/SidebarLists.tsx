@@ -3,7 +3,11 @@ import styled, { keyframes } from "styled-components";
 import { IconArrowDown, IconArrowUp } from "../../common/Icons";
 import Lists from "./Lists";
 
-export default function SidebarLists({ open }) {
+interface SidebarListsProps {
+  open: boolean;
+}
+
+export default function SidebarLists({ open }: SidebarListsProps) {
   const [openLists, setOpenLists] = useState(true);
 
   return (
@@ -12,15 +16,9 @@ export default function SidebarLists({ open }) {
         <h1>Listas</h1>
 
         {openLists ? (
-          <IconArrowUp
-            cursor={"pointer"}
-            onClick={() => setOpenLists(!openLists)}
-          />
+          <IconArrowUp cursor={"pointer"} onClick={() => setOpenLists(!openLists)} />
         ) : (
-          <IconArrowDown
-            cursor={"pointer"}
-            onClick={() => setOpenLists(!openLists)}
-          />
+          <IconArrowDown cursor={"pointer"} onClick={() => setOpenLists(!openLists)} />
         )}
       </span>
 
@@ -28,6 +26,10 @@ export default function SidebarLists({ open }) {
     </WrapperSideBar>
   );
 }
+
+type WrapperSidebar = {
+  open: boolean;
+};
 
 const fadeIn = keyframes`
   from {
@@ -40,7 +42,7 @@ const fadeIn = keyframes`
   }
 `;
 
-const WrapperSideBar = styled.div`
+const WrapperSideBar = styled.div<WrapperSidebar>`
   width: 20vw;
   position: fixed;
   height: 100vh;

@@ -4,20 +4,32 @@ import { toast } from "react-toastify";
 import { postSignUp } from "../services/authenticationService";
 import WrapperForm from "../common/FormLoginAndSignUp";
 
+interface FormProps {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+}
+
+interface HandleFormProps {
+  name: string;
+  value: string;
+}
+
 export default function SignUp() {
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState<FormProps>({ name: "", email: "", password: "", confirmPassword: "" });
   const [errorPassword, setErrorPassword] = useState(false);
   const [errorConfirmPassword, setErrorConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
-  function handleForm({ name, value }) {
+  function handleForm({ name, value }: HandleFormProps) {
     setForm({
       ...form,
       [name]: value,
     });
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (form.password.length < 6) {
@@ -41,7 +53,7 @@ export default function SignUp() {
       await postSignUp(formWithoutConfirmPassword);
       toast("Cadastro realizado com sucesso! Faça seu login");
       navigate("/sign-in");
-    } catch (err) {
+    } catch (err: any) {
       if (err.response.status === 409) {
         toast("E-mail já cadastrado!");
       } else {
@@ -61,14 +73,10 @@ export default function SignUp() {
           name="name"
           placeholder="Insira seu nome aqui"
           autoFocus
-          onChange={(e) =>
-            handleForm({ name: e.target.name, value: e.target.value })
-          }
+          onChange={(e) => handleForm({ name: e.target.name, value: e.target.value })}
           required
-          onInvalid={(F) =>
-            F.target.setCustomValidity("Por favor, preencha com seu nome.")
-          }
-          onInput={(F) => F.target.setCustomValidity("")}
+          onInvalid={(F) => (F.target as HTMLInputElement).setCustomValidity("Por favor, preencha com seu nome.")}
+          onInput={(F) => (F.target as HTMLInputElement).setCustomValidity("")}
         />
 
         <label>E-mail</label>
@@ -76,14 +84,10 @@ export default function SignUp() {
           type="email"
           name="email"
           placeholder="nome@email.com"
-          onChange={(e) =>
-            handleForm({ name: e.target.name, value: e.target.value })
-          }
+          onChange={(e) => handleForm({ name: e.target.name, value: e.target.value })}
           required
-          onInvalid={(F) =>
-            F.target.setCustomValidity("Favor, insira seu e-mail.")
-          }
-          onInput={(F) => F.target.setCustomValidity("")}
+          onInvalid={(F) => (F.target as HTMLInputElement).setCustomValidity("Favor, insira seu e-mail.")}
+          onInput={(F) => (F.target as HTMLInputElement).setCustomValidity("")}
         />
 
         <label>Senha</label>
@@ -91,12 +95,10 @@ export default function SignUp() {
           type="password"
           name="password"
           placeholder="********"
-          onChange={(e) =>
-            handleForm({ name: e.target.name, value: e.target.value })
-          }
+          onChange={(e) => handleForm({ name: e.target.name, value: e.target.value })}
           required
-          onInvalid={(F) => F.target.setCustomValidity("Insira sua senha.")}
-          onInput={(F) => F.target.setCustomValidity("")}
+          onInvalid={(F) => (F.target as HTMLInputElement).setCustomValidity("Insira sua senha.")}
+          onInput={(F) => (F.target as HTMLInputElement).setCustomValidity("")}
         />
         {errorPassword && <p>A senha deve possuir no mínimo 6 caracteres!</p>}
 
@@ -105,12 +107,10 @@ export default function SignUp() {
           type="password"
           name="confirmPassword"
           placeholder="********"
-          onChange={(e) =>
-            handleForm({ name: e.target.name, value: e.target.value })
-          }
+          onChange={(e) => handleForm({ name: e.target.name, value: e.target.value })}
           required
-          onInvalid={(F) => F.target.setCustomValidity("Confirme sua senha.")}
-          onInput={(F) => F.target.setCustomValidity("")}
+          onInvalid={(F) => (F.target as HTMLInputElement).setCustomValidity("Confirme sua senha.")}
+          onInput={(F) => (F.target as HTMLInputElement).setCustomValidity("")}
         />
         {errorConfirmPassword && <p>As senhas devem ser iguais!</p>}
 

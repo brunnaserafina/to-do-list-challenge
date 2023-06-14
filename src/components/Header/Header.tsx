@@ -1,16 +1,17 @@
 import { useState } from "react";
-import styled from "styled-components";
 import Search from "./Search";
 import UserMenuWithLogout from "./Logout";
-import previewProfilePicture from "../../assets/images/preview-profile-picture.png";
-import {
-  IconArrowDown,
-  IconArrowUp,
-  IconMenuHamburger,
-} from "../../common/Icons";
+import { IconArrowDown, IconArrowUp, IconMenuHamburger } from "../../common/Icons";
+import profilePicture from "../../assets/images/profile.png";
+import styled from "styled-components";
 
-export default function Header({ setOpenSidebarLists, openSidebarLists }) {
-  const [openUserMenu, setOpenUserMenu] = useState(false);
+interface HeaderProps {
+  openSidebarLists: boolean;
+  setOpenSidebarLists: (value: boolean) => void;
+}
+
+export default function Header({ setOpenSidebarLists, openSidebarLists }: HeaderProps) {
+  const [openUserMenu, setOpenUserMenu] = useState<boolean>(false);
 
   return (
     <WrapperHeader>
@@ -24,7 +25,7 @@ export default function Header({ setOpenSidebarLists, openSidebarLists }) {
       <Search />
 
       <UserMenu onClick={() => setOpenUserMenu(!openUserMenu)}>
-        <img src={previewProfilePicture} alt="Foto perfil" />
+        <img src={profilePicture} alt="Foto perfil" />
 
         {openUserMenu ? (
           <>

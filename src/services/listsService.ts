@@ -3,7 +3,26 @@ import createHeaders from "./headersConfig";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-function postList(body) {
+interface PostListProps {
+  title: string;
+  order: number;
+}
+
+interface DeleteListProps {
+  listId: number;
+}
+
+interface EditTitleListProps {
+  listId: number;
+  title: string;
+}
+
+interface EditOrderList {
+  order: number;
+  listId: number;
+}
+
+function postList(body: PostListProps) {
   const config = createHeaders();
 
   const promise = axios.post(`${BASE_URL}/lists/add`, body, config);
@@ -17,7 +36,7 @@ function getLists() {
   return promise;
 }
 
-function deleteList(params) {
+function deleteList(params: DeleteListProps) {
   const { listId } = params;
   const config = createHeaders();
 
@@ -25,18 +44,18 @@ function deleteList(params) {
   return promise;
 }
 
-function editTitleList(params) {
+function editTitleList(params: EditTitleListProps) {
   const { listId, title } = params;
-  
+
   const config = createHeaders();
 
   const promise = axios.put(`${BASE_URL}/lists/${listId}`, { title }, config);
   return promise;
 }
 
-async function editOrderList(params){
+async function editOrderList(params: EditOrderList) {
   const { order, listId } = params;
-  
+
   const config = createHeaders();
 
   const promise = await axios.put(`${BASE_URL}/lists/order/${listId}`, { order }, config);

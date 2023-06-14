@@ -10,7 +10,8 @@ import ListItem from "./ListItem";
 export default function Lists() {
   const [openInputCreatedNewList, setOpenInputCreatedNewList] = useState(false);
   const [titleInputList, setTitleInputList] = useState("");
-  const { allLists, setAllLists, setIdListSelected, setTitleListSelected, titleListSelected } = useContext(ListsContext);
+  const { allLists, setAllLists, setIdListSelected, setTitleListSelected, titleListSelected } =
+    useContext(ListsContext)!;
 
   const addNewList = useCallback(async () => {
     if (titleInputList === "") return;
@@ -43,7 +44,7 @@ export default function Lists() {
     getAllLists();
   }, [setAllLists, setIdListSelected, titleListSelected, setTitleListSelected, addNewList]);
 
-  function handleKeyDown(event) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.keyCode === 13) addNewList();
   }
 

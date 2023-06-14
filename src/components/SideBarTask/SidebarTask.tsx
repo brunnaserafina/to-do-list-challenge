@@ -9,10 +9,14 @@ import TasksContext from "../../contexts/TasksContext";
 import { editTaskName, getTaskById, putAnnotationTask } from "../../services/tasksService";
 import { IconCloseSidebarTask } from "../../common/Icons";
 
-export default function SidebarTask({ open }) {
-  const [tasks, setTasks] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [annotations, setAnnotations] = useState([]);
+interface SidebarTaskProps {
+  open: boolean;
+}
+
+export default function SidebarTask({ open }: SidebarTaskProps) {
+  const [tasks, setTasks] = useState<any>([]);
+  const [startDate, setStartDate] = useState<any>(null);
+  const [annotations, setAnnotations] = useState<string[]>([]);
   const {
     taskIdSelected,
     annotation,
@@ -22,7 +26,7 @@ export default function SidebarTask({ open }) {
     newTaskName,
     setUpdatedTasks,
     setOpenInputTask,
-  } = useContext(TasksContext);
+  } = useContext(TasksContext)!;
 
   useEffect(() => {
     async function fetchTask() {
@@ -40,7 +44,7 @@ export default function SidebarTask({ open }) {
     fetchTask();
   }, [taskIdSelected, annotation, updatedTasks, setAnnotation]);
 
-  const handleSave = async (taskId, index) => {
+  const handleSave = async (taskId: number, index: number) => {
     try {
       if (newTaskName !== "") {
         await editTaskName({
@@ -50,11 +54,15 @@ export default function SidebarTask({ open }) {
 
         setOpenInputTask(false);
       }
-      await putAnnotationTask(taskId, annotations[index], startDate ? startDate.toISOString() : null);
+      await putAnnotationTask(
+        taskId,
+        annotations[index],
+        startDate instanceof Date ? startDate.toISOString() : new Date().toISOString(),
+      );
       const newAnnotations = [...annotations];
       newAnnotations[index] = annotations[index];
       setAnnotations(newAnnotations);
-      setUpdatedTasks((prev) => !prev);
+      setUpdatedTasks((prev: boolean) => !prev);
     } catch (error) {
       toast.error("Não foi possível salvar sua anotação, tente novamente!");
     }
@@ -62,11 +70,11 @@ export default function SidebarTask({ open }) {
 
   return (
     <WrapperSideBarTask open={open}>
-      {tasks?.map((item, index) => (
+      {tasks?.map((item: any, index: number) => (
         <div key={index}>
           <TaskItem id={item.id} name={item.name} isCompleted={item.is_completed} isSidebarTask />
 
-          <TextArea
+          <CustomTextArea
             value={annotations[index]}
             onChange={(e) => {
               const newanotations = [...annotations];
@@ -78,16 +86,27 @@ export default function SidebarTask({ open }) {
             rows="10"
             placeholder="Adicionar anotação"
             isCompleted={item.is_completed}
-          ></TextArea>
+          ></CustomTextArea>
 
           <InputCalendar
             value={
-              startDate ? `Data de vencimento: ${format(startDate, "dd/MM/yyyy")}` : `Escolha uma data de vencimento`
+              startDate
+                ? `Data de vencimento: ${format(new Date(startDate), "dd/MM/yyyy")}`
+                : `Escolha uma data de vencimento`
             }
-            selected={startDate}
+            selected={startDate instanceof Date ? startDate : null}
             dateFormat="dd/MM/yyyy"
             onChange={(date) => {
-              setStartDate(date);
+              if (date instanceof Date) {
+                setStartDate(date);
+              } else if (Array.isArray(date)) {
+                const [startDateValue] = date;
+                if (startDateValue instanceof Date) {
+                  setStartDate(startDateValue);
+                }
+              } else {
+                setStartDate(null);
+              }
             }}
             onKeyDown={(e) => {
               if (e.key === "Backspace") {
@@ -111,6 +130,38 @@ export default function SidebarTask({ open }) {
     </WrapperSideBarTask>
   );
 }
+
+interface TextAreaProps {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  id: string;
+  cols?: number | string;
+  rows?: number | string;
+  placeholder?: string;
+  isCompleted?: boolean;
+}
+
+const CustomTextArea: React.FC<TextAreaProps> = ({ value, onChange, id, cols, rows, placeholder, isCompleted }) => {
+  const colsValue = typeof cols === "number" ? cols : parseInt(cols as string, 10);
+  const rowsValue = typeof rows === "number" ? rows : parseInt(rows as string, 10);
+
+  return (
+    <TextArea
+      value={value}
+      onChange={onChange}
+      id={id}
+      cols={colsValue}
+      rows={rowsValue}
+      placeholder={placeholder}
+      className={isCompleted ? "completed" : ""}
+    />
+  );
+};
+
+type PropsStyle = {
+  isCompleted?: boolean;
+  open?: boolean;
+};
 
 const fadeIn = keyframes`
   from {
@@ -146,7 +197,7 @@ const CloseSideBarAndDeleteTask = styled.div`
   justify-content: space-between;
 `;
 
-const WrapperSideBarTask = styled.span`
+const WrapperSideBarTask = styled.span<PropsStyle>`
   position: fixed;
   right: 0;
   background-color: var(--gray);
@@ -179,7 +230,7 @@ const WrapperSideBarTask = styled.span`
   }
 `;
 
-const TextArea = styled.textarea`
+const TextArea = styled.textarea<PropsStyle>`
   width: 100%;
   margin-top: 20px;
   border: none;
@@ -201,7 +252,7 @@ const TextArea = styled.textarea`
   }
 `;
 
-const Button = styled.button`
+const Button = styled.button<PropsStyle>`
   width: 100%;
   border: none;
   background-color: ${(props) => (props.isCompleted ? "gray" : "var(--light-green)")};
